@@ -22,13 +22,13 @@ class TestJVM extends Simulation {
       case c => c
     }
   }
+  val contactPoint = getProperty("contactPoint", "localhost")
 
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
 
 
-  val formatter = DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm:ss")
   Random.setSeed(1321254L)
   val random = new Random()
   val subset: Array[Char] = "0123456789abcdefghijklmnopqrstuvwxyzAZERTYUIOPMLKJHGFDSQWXCVBN".toCharArray
@@ -47,7 +47,7 @@ class TestJVM extends Simulation {
   def getRandomDate() = new Date(random.nextInt(999999999))
 
   val cluster = Cluster.builder()
-    .addContactPoints("127.0.0.1")
+    .addContactPoints(contactPoint)
     .withPoolingOptions(new PoolingOptions()
       .setConnectionsPerHost(HostDistance.LOCAL, 10, 16)
       .setMaxRequestsPerConnection(HostDistance.LOCAL, 10000))
