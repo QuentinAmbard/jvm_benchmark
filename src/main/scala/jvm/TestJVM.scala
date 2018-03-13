@@ -50,7 +50,7 @@ class TestJVM extends Simulation {
     .addContactPoints(contactPoint)
     .withPoolingOptions(new PoolingOptions()
       .setConnectionsPerHost(HostDistance.LOCAL, 10, 16)
-      .setMaxRequestsPerConnection(HostDistance.LOCAL, 10000))
+      .setMaxRequestsPerConnection(HostDistance.LOCAL, 1000))
     .build()
 
   val session = cluster.connect() //Your C* session
