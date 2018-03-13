@@ -45,7 +45,7 @@ class TestJVM extends Simulation {
 
   def getRandom[A](list: Array[A]): A = list(random.nextInt(list.length))
 
-  val dates = (0 to 1000000).map(i => new Date(random.nextInt(999999999))).toArray
+  val dates = (0 to 1000000).map(i => new Date(i)).toArray
 
 
   val cluster = Cluster.builder()
