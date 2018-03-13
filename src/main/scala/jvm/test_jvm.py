@@ -134,6 +134,12 @@ class Test:
         process.wait()
         print("test done")
 
+    def test(self):
+        self.loadConfigurationFile()
+        self.restartDSE()
+        self.resetDSE()
+        self.startGatlingTest()
+
 
 
 # plt.plot([1,2,3,4])
@@ -142,9 +148,4 @@ class Test:
 
 
 test1 = Test("test-witTLAB", "8G", "8G")
-
- test1.enableTlab()
-# test1.loadConfigurationFile()
-#test1.restartDSE()
-# test1.resetDSE()
-#test1.startGatlingTest()
+test1.test()
