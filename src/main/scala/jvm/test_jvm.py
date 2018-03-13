@@ -106,7 +106,7 @@ class Test:
         print("killing DSE:"+command)
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
-        print("Restarting DSE")
+        print("Restarting DSE"+command)
         command = self.getSSH()+options.dseFolder+"/bin/dse cassandra -R"
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(30)
