@@ -27,7 +27,7 @@ class TestJVM extends Simulation {
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
-  val rampupDurationSec = getProperty("rampupDurationSec", "30").toInt
+  val rampupDurationSec = getProperty("rampupDurationSec", "60").toInt
 
 
   Random.setSeed(1321254L)
