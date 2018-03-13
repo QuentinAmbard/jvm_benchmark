@@ -44,7 +44,8 @@ class TestJVM extends Simulation {
 
   def getRandom[A](list: Array[A]): A = list(random.nextInt(list.length))
 
-  def getRandomDate() = new Date(random.nextInt(999999999))
+  val dates = (0 to 1000000).map(i => new Date(random.nextInt(999999999))).toArray
+
 
   val cluster = Cluster.builder()
     .addContactPoints(contactPoint)
@@ -125,7 +126,7 @@ class TestJVM extends Simulation {
       c += 1
       Map(
         "id" -> c ,
-        "time" -> getRandomDate(),
+        "time" -> getRandom(dates),
         "content"  -> getRandom(contents),
         "like" -> random.nextInt(),
         "categories" -> getRandom(categories)
