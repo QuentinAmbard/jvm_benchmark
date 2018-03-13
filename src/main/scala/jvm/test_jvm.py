@@ -11,15 +11,16 @@ import os
 #apt-get install sysstat gnuplot
 #pip install cassandra-driver
 
+#python3.4 /root/jvm_benchmark/src/main/scala/jvm/test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2/" --dseFolder="/root/dse-6.0.0" --dseHost="37.187.28.208" --ssh="root@37.187.28.208" --testDurationSec="20" --writePerSecPerQuery="1000" --readPerSecPerQuery="1000"
 
 parser = OptionParser()
 parser.add_option("-g", "--gatlingFolder", default="/home/quentin/tools/gatling-charts-highcharts-bundle-2.2.2")
 parser.add_option("-f", "--dseFolder", default="/home/quentin/dse/dse-5.1.4")
 parser.add_option("-s", "--dseHost", default="127.0.0.1")
+parser.add_option("-z", "--ssh", default="")
 parser.add_option("-d", "--testDurationSec", default="20")
 parser.add_option("-w", "--writePerSecPerQuery", default="1000")
 parser.add_option("-r", "--readPerSecPerQuery", default="1000")
-parser.add_option("-z", "--ssh", default="")
 
 
 (options, args) = parser.parse_args()
@@ -84,8 +85,12 @@ class Test:
                 for key, value in self.params.items():
                     line = line.replace("#${"+key+"}", value)
                 outfile.write(line)
-        #TODO scp instead
-        subprocess.call(self.getSSH()+"cp jvm.options "+options.dseFolder+"/resources/cassandra/conf/jvm.options", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        if options.ssh == "":
+            command = "cp jvm.options "+options.dseFolder+"/resources/cassandra/conf/jvm.options"
+        else:
+            command = "scp jvm.options "+options.ssh+":"+options.dseFolder+"/resources/cassandra/conf/jvm.options"
+        subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def archiveResults(self):
         print("archive results")
