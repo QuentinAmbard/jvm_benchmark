@@ -78,7 +78,7 @@ class TestJVM extends Simulation {
   val insertPerson = scenario("insert Person").repeat(1) {
     feed(Iterator.continually({
       p += 1
-      if(m>maxEntitiesPerTable) p = 0
+      if(p>maxEntitiesPerTable) p = 0
       Map(
         "id" -> p/10 ,
         "firstname" -> s"$p${getRandom(firstnames)}",
@@ -127,6 +127,7 @@ class TestJVM extends Simulation {
   val insertComment = scenario("insert comment").repeat(1) {
     feed(Iterator.continually({
       c += 1
+      if(c>maxEntitiesPerTable) c = 0
       Map(
         "id" -> c/10 ,
         "time" -> getRandom(dates),
