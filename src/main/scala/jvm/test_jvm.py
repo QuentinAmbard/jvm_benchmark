@@ -96,18 +96,18 @@ class Test:
     def archiveResults(self):
         print("archive results")
 
-    def getSSH(self):
+    def sshCommand(self, command):
         if options.ssh == "":
-            return ""
-        return "ssh "+options.ssh+" "
+            return command
+        return "ssh "+options.ssh+" '"+command+"'"
 
     def restartDSE(self):
-        command = self.getSSH()+"kill -9 $(pgrep -f cassandra)"
+        command = self.sshCommand("kill -9 $(pgrep -f cassandra)")
         print("killing DSE:"+command)
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
+        command = self.sshCommand(options.dseFolder+"/bin/dse cassandra -R")
         print("Restarting DSE"+command)
-        command = self.getSSH()+options.dseFolder+"/bin/dse cassandra -R"
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(30)
 
