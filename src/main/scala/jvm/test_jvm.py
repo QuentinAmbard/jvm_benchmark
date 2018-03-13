@@ -132,11 +132,11 @@ class Test:
 
     def startGatlingTest(self):
         print("Warming up jvm, (10 sec gatling stress)")
-        process = subprocess.Popen("""export JAVA_OPTS="-DtestDurationSec=10 -DwritePerSecPerQuery=1000 -DreadPerSecPerQuery=1000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen("""export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=10 -DwritePerSecPerQuery=1000 -DreadPerSecPerQuery=1000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
         time.sleep(2)
         print("Running "+self.name)
-        command = """export JAVA_OPTS="-DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
+        command = """export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
