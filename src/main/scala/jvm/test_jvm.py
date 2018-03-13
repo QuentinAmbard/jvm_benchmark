@@ -109,10 +109,12 @@ class Test:
         command = self.sshCommand(options.dseFolder+"/bin/dse cassandra -R")
         print("Restarting DSE"+command)
         subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print("Sleeping 30sec")
         time.sleep(30)
 
     def resetDSE(self, count = 0):
         try:
+            print("tryint to connect to"+options.dseHost)
             cluster = Cluster([options.dseHost])
             session = cluster.connect()
             session.execute("create keyspace if not exists jvm with replication = {'class': 'SimpleStrategy', 'replication_factor': 1} AND durable_writes = false ")
