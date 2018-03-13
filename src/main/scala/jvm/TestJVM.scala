@@ -80,7 +80,7 @@ class TestJVM extends Simulation {
         "id" -> p ,
         "firstname" -> s"$p${getRandom(firstnames)}",
         "lastname"  -> s"$p${getRandom(lastnames)}",
-        "age" -> random.nextInt(),
+        "age" -> p,
         "city" -> s"$p${getRandom(cities)}",
         "address" -> s"$p${getRandom(addresses)}",
         "zipcode" -> s"$p${getRandom(zipcodes)}",
@@ -109,21 +109,26 @@ class TestJVM extends Simulation {
     )
   }
 
+  val categories = (0 to 1000).map(i => {
+    val c = new util.HashMap[String, String]()
+    c.put(random.nextString(10), random.nextString(10))
+    c.put(random.nextString(10), random.nextString(10))
+    c.put(random.nextString(10), random.nextString(10))
+    c
+  }).toArray
+
+
   var c = 0
   val insertCommentQ = session.prepare("""INSERT INTO jvm.comment (id, time, content, like, categories) VALUES (?,?,?,?,?)""")
   val insertComment = scenario("insert comment").repeat(1) {
     feed(Iterator.continually({
-      val categories = new util.HashMap[String, String]()
-      categories.put(random.nextString(10), random.nextString(10))
-      categories.put(random.nextString(10), random.nextString(10))
-      categories.put(random.nextString(10), random.nextString(10))
       c += 1
       Map(
         "id" -> c ,
         "time" -> getRandomDate(),
         "content"  -> getRandom(contents),
         "like" -> random.nextInt(),
-        "categories" -> categories
+        "categories" -> getRandom(categories)
       )
     })).exec(cql("insert comment").execute(insertCommentQ)
       .withParams("${id}", "${time}", "${content}", "${like}", "${categories}")

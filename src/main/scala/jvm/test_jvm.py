@@ -114,7 +114,6 @@ class Test:
 
     def resetDSE(self, count = 0):
         try:
-            print("tryint to connect to"+options.dseHost)
             cluster = Cluster([options.dseHost])
             session = cluster.connect()
             session.execute("create keyspace if not exists jvm with replication = {'class': 'SimpleStrategy', 'replication_factor': 1} AND durable_writes = false ")
@@ -128,6 +127,7 @@ class Test:
             print("Tables truncated, DSE is ready")
         except:
             time.sleep(1)
+            print("trying to connect to"+options.dseHost)
             if count > 60:
                 print("ERROR, DSE hasn't restarted, something is wrong...")
             else:
