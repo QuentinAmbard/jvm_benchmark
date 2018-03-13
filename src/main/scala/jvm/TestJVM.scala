@@ -80,7 +80,7 @@ class TestJVM extends Simulation {
       p += 1
       //if(p>maxEntitiesPerTable) p = 0
       Map(
-        "id" -> p/10 ,
+        "id" -> p ,
         "firstname" -> s"$p${getRandom(firstnames)}",
         "lastname"  -> s"$p${getRandom(lastnames)}",
         "age" -> p,
