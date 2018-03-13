@@ -108,7 +108,7 @@ class Test:
         time.sleep(1)
         command = self.sshCommand(options.dseFolder+"/bin/dse cassandra -R")
         print("Restarting DSE"+command)
-        subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.call(command)
         time.sleep(30)
 
     def resetDSE(self, count = 0):
