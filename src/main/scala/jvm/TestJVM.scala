@@ -183,13 +183,13 @@ class TestJVM extends Simulation {
   }
 
   setUp(
-    insertPerson.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
-    ,insertMessage.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
-    ,insertComment.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    insertPerson.inject(rampUsersPerSec(10) to writePerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    ,insertMessage.inject(rampUsersPerSec(10) to writePerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    ,insertComment.inject(rampUsersPerSec(10) to writePerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
 
-    ,readPerson.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
-    ,readMessage.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
-    ,readComment.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readPerson.inject(rampUsersPerSec(10) to readPerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readMessage.inject(rampUsersPerSec(10) to readPerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readComment.inject(rampUsersPerSec(10) to readPerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
   ).protocols(cqlConfig)
 
 //  session.execute("delete from jvm.test where name='gatling'")
