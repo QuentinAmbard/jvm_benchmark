@@ -102,11 +102,13 @@ class Test:
         return "ssh "+options.ssh+" "
 
     def restartDSE(self):
-        print("killing DSE")
-        subprocess.call(self.getSSH()+"kill -9 $(pgrep -f cassandra)", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        command = self.getSSH()+"kill -9 $(pgrep -f cassandra)"
+        print("killing DSE:"+command)
+        subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
         print("Restarting DSE")
-        subprocess.call(self.getSSH()+options.dseFolder+"/bin/dse cassandra -R", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        command = self.getSSH()+options.dseFolder+"/bin/dse cassandra -R"
+        subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(30)
 
     def resetDSE(self, count = 0):
