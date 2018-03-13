@@ -28,7 +28,7 @@ class TestJVM extends Simulation {
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
   val rampupDurationSec = getProperty("rampupDurationSec", "60").toInt
-
+  val maxEntitiesPerTable = getProperty("maxEntitiesPerTable", "100000").toInt
 
   Random.setSeed(1321254L)
   val random = new Random()
@@ -78,8 +78,9 @@ class TestJVM extends Simulation {
   val insertPerson = scenario("insert Person").repeat(1) {
     feed(Iterator.continually({
       p += 1
+      if(m>maxEntitiesPerTable) p = 0
       Map(
-        "id" -> p ,
+        "id" -> p/10 ,
         "firstname" -> s"$p${getRandom(firstnames)}",
         "lastname"  -> s"$p${getRandom(lastnames)}",
         "age" -> p,
@@ -98,9 +99,10 @@ class TestJVM extends Simulation {
   val insertMessage = scenario("insert message").repeat(1) {
     feed(Iterator.continually({
       m += 1
+      if(m>maxEntitiesPerTable) m = 0
       Map(
         "person_id" -> p/10,
-        "id" -> m ,
+        "id" -> m/100 ,
         "header"  -> getRandom(lastnames),
         "content" -> getRandom(smallContents),
         "content2" -> getRandom(smallContents),
@@ -126,7 +128,7 @@ class TestJVM extends Simulation {
     feed(Iterator.continually({
       c += 1
       Map(
-        "id" -> c ,
+        "id" -> c/10 ,
         "time" -> getRandom(dates),
         "content"  -> getRandom(contents),
         "like" -> random.nextInt(),

@@ -120,7 +120,6 @@ class Test:
             session.execute("create table if not exists jvm.person (id int, firstname text, lastname text, age int, city text, address text, zipcode text, description text, primary key (id))")
             session.execute("create table if not exists jvm.message (person_id int, id int, header text, content blob, content2 blob, score float, primary key ((person_id), id))")
             session.execute("create table if not exists jvm.comment (id int, time timestamp, content text, like int, categories map<text, text>, primary key ((id), time))")
-            session.execute("create table if not exists jvm.test (name text primary key, state text)")
             session.execute("truncate table jvm.person")
             session.execute("truncate table jvm.comment")
             session.execute("truncate table jvm.message")
