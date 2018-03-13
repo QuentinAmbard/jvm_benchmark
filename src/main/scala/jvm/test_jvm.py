@@ -19,6 +19,9 @@ parser.add_option("-s", "--dseHost", default="127.0.0.1")
 parser.add_option("-d", "--testDurationSec", default="20")
 parser.add_option("-w", "--writePerSecPerQuery", default="1000")
 parser.add_option("-r", "--readPerSecPerQuery", default="1000")
+parser.add_option("-z", "--ssh", default="")
+
+
 (options, args) = parser.parse_args()
 testDurationSec = int(options.testDurationSec)
 writePerSecPerQuery = int(options.writePerSecPerQuery)
@@ -31,9 +34,14 @@ class Test:
     def __init__(self, name, xmx, xms, G1MaxGCPauseMilli = 300, xss=256):
         self.name = name
         self.params = {}
+        self.useG1()
         self.params["xmx"] = "-Xmx"+xmx
         self.params["xms"] = "-Xms"+xms
         self.setG1MaxGCPauseMilli(G1MaxGCPauseMilli)
+        self.setG1UpdatingPausePersent(5)
+        self.enableTlab()
+        self.enableNuma()
+        self.enableHsperfdata()
         self.setXss(xss)
 
     def setXmn(self, xmn):
@@ -77,17 +85,22 @@ class Test:
                     line = line.replace("#${"+key+"}", value)
                 outfile.write(line)
         #TODO scp instead
-        subprocess.call("cp jvm.options "+option.dseFolder+"/resources/cassandra/conf/jvm.options", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.call(self.getSSH()+"cp jvm.options "+options.dseFolder+"/resources/cassandra/conf/jvm.options", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def archiveResults(self):
         print("archive results")
 
+    def getSSH(self):
+        if options.ssh == "":
+            return ""
+        return "ssh "+options.ssh+" "
+
     def restartDSE(self):
         print("killing DSE")
-        subprocess.call("kill -9 $(pgrep -f cassandra)", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.call(self.getSSH()+"kill -9 $(pgrep -f cassandra)", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
         print("Restarting DSE")
-        subprocess.call(option.dseFolder+"/bin/dse cassandra -R", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.call(self.getSSH()+options.dseFolder+"/bin/dse cassandra -R", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(30)
 
     def resetDSE(self, count = 0):
@@ -128,9 +141,9 @@ class Test:
 # plt.savefig('foo.png', dpi=200)
 
 
-#test1 = Test("test-witTLAB", "8G", "8G")
+test1 = Test("test-witTLAB", "8G", "8G")
 
-# test1.enableTlab()
+ test1.enableTlab()
 # test1.loadConfigurationFile()
 #test1.restartDSE()
 # test1.resetDSE()
