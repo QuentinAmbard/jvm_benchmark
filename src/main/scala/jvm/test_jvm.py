@@ -29,7 +29,8 @@ writePerSecPerQuery = int(options.writePerSecPerQuery)
 readPerSecPerQuery = int(options.readPerSecPerQuery)
 
 #gatlingFolder = "/home/quentin/tools/gatling-charts-highcharts-bundle-2.2.2"
-outputFolder =  options.gatlingFolder+"/results/"+time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+outputFolder = options.gatlingFolder+"/results/"+time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+print("Gatling ouptput folder:"+outputFolder)
 
 class Test:
     def __init__(self, name, xmx, xms, G1MaxGCPauseMilli = 300, xss=256):
@@ -135,7 +136,9 @@ class Test:
         process.wait()
         time.sleep(2)
         print("Running "+self.name)
-        process = subprocess.Popen("""export JAVA_OPTS="-DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        command = """export JAVA_OPTS="-DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
+        print(command)
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
         print("test done")
 
