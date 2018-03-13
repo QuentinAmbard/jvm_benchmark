@@ -27,6 +27,7 @@ class TestJVM extends Simulation {
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
+  val rampupDurationSec = getProperty("rampupDurationSec", "30").toInt
 
 
   Random.setSeed(1321254L)
@@ -182,13 +183,13 @@ class TestJVM extends Simulation {
   }
 
   setUp(
-    insertPerson.inject(constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
-    ,insertMessage.inject(constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
-    ,insertComment.inject(constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    insertPerson.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    ,insertMessage.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    ,insertComment.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
 
-    ,readPerson.inject(constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
-    ,readMessage.inject(constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
-    ,readComment.inject(constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readPerson.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readMessage.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readComment.inject(rampUsers(writePerSecPerQuery) over (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
   ).protocols(cqlConfig)
 
 //  session.execute("delete from jvm.test where name='gatling'")
