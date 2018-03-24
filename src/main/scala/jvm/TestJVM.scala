@@ -43,7 +43,7 @@ class TestJVM extends Simulation {
   }
 
 
-  def getRandom[A](list: Array[A]): A = list(random.nextInt(list.length))
+  def getRandom[A](values: Array[A]): A = values(random.nextInt(values.length))
 
   val dates = (0 to 1000000).map(i => new Date(i)).toArray
 
