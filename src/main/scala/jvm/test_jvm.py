@@ -21,6 +21,8 @@ parser.add_option("-z", "--ssh", default="")
 parser.add_option("-d", "--testDurationSec", default="20")
 parser.add_option("-w", "--writePerSecPerQuery", default="1000")
 parser.add_option("-r", "--readPerSecPerQuery", default="1000")
+parser.add_option("-j", "--oracleJdkPath", default="/opt/jdk1.8.0_161/bin/java")
+parser.add_option("-a", "--zingJdkPath", default="/opt/zing/zing-jdk1.8.0-18.02.0.0-4-x86_64/bin/java")
 
 
 (options, args) = parser.parse_args()
@@ -45,6 +47,11 @@ class Test:
         self.enableNuma()
         self.enableHsperfdata()
         self.setXss(xss)
+        self.java = "alternatives --set java "+options.oracleJdkPath
+
+    def useZing(self):
+        self.java = "alternatives --set java "+options.zingJdkPath
+
 
     def setXmn(self, xmn):
         self.params["xmn"] = "-Xmn"+xmn
@@ -106,7 +113,7 @@ class Test:
         print("killing DSE:"+command)
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
-        command = self.sshCommand(options.dseFolder+"/bin/dse cassandra -R")
+        command = self.sshCommand(self.java+" && "+options.dseFolder+"/bin/dse cassandra -R")
         print("Restarting DSE"+command)
         subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print("Sleeping 30sec")
@@ -133,16 +140,21 @@ class Test:
                 self.resetDSE(count+1)
 
 
+
     def startGatlingTest(self):
         print("Warming up jvm, (10 sec gatling stress)")
-        process = subprocess.Popen("""export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=10 -DwritePerSecPerQuery=1000 -DreadPerSecPerQuery=1000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=10 -DwritePerSecPerQuery=1000 -DreadPerSecPerQuery=1000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
         time.sleep(2)
         print("Running "+self.name)
-        command = """export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
+        command = """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        process.wait()
+        process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        command_sar = "sarviewer-master/data_collector.sh -n %d -i 1 && cp cp -r sarviewer-master/graphs/* %s " % (testDurationSec + 20, outputFolder+"/"+self.name+"-sar")
+        print command_sar
+        process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process_injector.wait()
+        process_sar.wait()
         print("test done")
 
     def test(self):
