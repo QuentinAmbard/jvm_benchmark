@@ -71,7 +71,7 @@ class Test:
         self.params["hsperfdata"] = "-XX:+PerfDisableSharedMem"
 
     def useG1(self):
-        self.params["g1"] = "-XX:+UseG1GC"
+        self.params["useg1"] = "-XX:+UseG1GC"
 
     def setG1UpdatingPausePersent(self, percent):
         self.params["g1UpdatingPausePercent"] = "-XX:G1RSetUpdatingPauseTimePercent="+str(percent)
