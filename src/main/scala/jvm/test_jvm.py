@@ -152,7 +152,7 @@ class Test:
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         command_sar = "sarviewer-master/data_collector.sh -n %d -i 1 && cp cp -r sarviewer-master/graphs/* %s " % (testDurationSec + 20, outputFolder+"/"+self.name+"-sar")
-        print command_sar
+        print(command_sar)
         process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
         process_sar.wait()
