@@ -153,6 +153,16 @@
 #-XX:ParallelGCThreads=16
 #${g1ParallelGCThreads}
 
+#-XX:G1HeapRegionSize=4194304
+#${g1RegionSize}
+
+#-XX:G1NewSizePercent=5
+#${g1NewSizePercent}
+
+#-XX:G1HeapWastePercent=10
+#${g1HeapWastePercent}
+
+
 # By default, ConcGCThreads is 1/4 of ParallelGCThreads.
 # Setting both to the same value can reduce STW durations.
 #-XX:ConcGCThreads=16
