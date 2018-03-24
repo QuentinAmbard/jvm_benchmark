@@ -57,8 +57,6 @@ class TestJVM extends Simulation {
 
   val session = cluster.connect() //Your C* session
 
-  val myUdt: UDTValue = cluster.getMetadata.getKeyspace("myKs").getUserType("myUdt").newValue
-
   val firstnames = (0 to 100000).map(_ => getRandomStr(30)).toArray
   val lastnames = (0 to 100000).map(_ => getRandomStr(50)).toArray
   val cities = (0 to 10000).map(_ => getRandomStr(10+random.nextInt(10))).toArray
