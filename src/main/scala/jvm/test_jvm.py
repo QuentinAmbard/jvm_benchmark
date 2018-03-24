@@ -11,7 +11,8 @@ import os
 #apt-get install sysstat gnuplot
 #pip install cassandra-driver
 
-#python3.4 /root/jvm_benchmark/src/main/scala/jvm/test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2/" --dseFolder="/root/dse-6.0.0" --dseHost="37.187.28.208" --ssh="root@37.187.28.208" --testDurationSec="20" --writePerSecPerQuery="1000" --readPerSecPerQuery="1000"
+#python3.4 ./test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2/" --dseFolder="/root/dse-5.1.7" --dseHost="37.187.28.208" --ssh="root@37.187.28.208" --testDurationSec="20" --writePerSecPerQuery="1000" --readPerSecPerQuery="1000"
+#python3.4 ./test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2/" --dseFolder="/root/dse-5.1.7" --dseHost="37.187.28.208" --ssh="" --testDurationSec="20" --writePerSecPerQuery="1000" --readPerSecPerQuery="1000"
 
 parser = OptionParser()
 parser.add_option("-g", "--gatlingFolder", default="/home/quentin/tools/gatling-charts-highcharts-bundle-2.2.2")
