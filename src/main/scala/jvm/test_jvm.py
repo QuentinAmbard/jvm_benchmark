@@ -154,7 +154,7 @@ class Test:
 
     def startGatlingTest(self):
         print("Warming up jvm, (10 sec gatling stress)")
-        process = subprocess.call("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=10 -DwritePerSecPerQuery=50000 -DreadPerSecPerQuery=50000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.call("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=10 -DwritePerSecPerQuery=10000 -DreadPerSecPerQuery=10000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
         time.sleep(2)
         print("Running "+self.name)
@@ -182,4 +182,6 @@ class Test:
 
 
 test1 = Test("test-witTLAB", "8G", "8G")
-test1.test()
+#test1.test()
+test1.resetDSE()
+test1.startGatlingTest()
