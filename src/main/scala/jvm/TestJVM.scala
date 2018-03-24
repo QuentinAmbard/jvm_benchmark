@@ -71,7 +71,6 @@ class TestJVM extends Simulation {
     ByteBuffer.wrap(b)
   }).toArray
 
-  val t:JdkSSLOptions
 
   val cqlConfig = cql.session(session) //Initialize Gatling DSL with your session
 
