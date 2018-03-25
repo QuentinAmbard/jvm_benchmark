@@ -102,7 +102,7 @@ class TestJVM extends Simulation {
       //if(m>maxEntitiesPerTable) m = 0
       Map(
         "person_id" -> p/10,
-        "id" -> m/100 ,
+        "id" -> m ,
         "header"  -> getRandom(lastnames),
         "content" -> getRandom(smallContents),
         "content2" -> getRandom(smallContents),
