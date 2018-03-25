@@ -130,8 +130,8 @@ class Test:
         time.sleep(1)
         command = self.sshCommand(self.java+" && "+options.dseFolder+"/bin/dse cassandra -R")
         print("Restarting DSE"+command)
-        #subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        #subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print("Sleeping 30sec")
         time.sleep(30)
 
@@ -197,6 +197,6 @@ class Test:
 
 
 test1 = Test("test-witTLAB", "31G", "31G")
-#test1.test()
-test1.resetDSE()
-test1.startGatlingTest()
+test1.test()
+#test1.resetDSE()
+#test1.startGatlingTest()
