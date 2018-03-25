@@ -27,7 +27,7 @@ class TestJVM extends Simulation {
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
-  val rampupDurationSec = getProperty("rampupDurationSec", "30").toInt
+  val rampupDurationSec = getProperty("rampupDurationSec", "40").toInt
   val maxEntitiesPerTable = getProperty("maxEntitiesPerTable", "100000").toInt
 
   Random.setSeed(1321254L)
@@ -62,9 +62,9 @@ class TestJVM extends Simulation {
   val cities = (0 to 10000).map(_ => getRandomStr(10+random.nextInt(10))).toArray
   val addresses = (0 to 1000000).map(_ => getRandomStr(20+random.nextInt(50))).toArray
   val zipcodes = (0 to 10000).map(_ => getRandomStr(7)).toArray
-  val contents = (0 to 10000).map(_ => getRandomStr(1000+random.nextInt(500))).toArray
+  val contents = (0 to 10000).map(_ => getRandomStr(2000+random.nextInt(500))).toArray
   val smallContents = (0 to 10000).map(i => {
-    val b = new Array[Byte](random.nextInt(100) + 50)
+    val b = new Array[Byte](random.nextInt(100) + 500)
     random.nextBytes(b)
     ByteBuffer.wrap(b)
   }).toArray
@@ -185,16 +185,24 @@ class TestJVM extends Simulation {
     )
   }
 
-  setUp(
-    insertPerson.inject(rampUsersPerSec(10) to writePerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
-    ,insertMessage.inject(rampUsersPerSec(10) to writePerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
-    ,insertComment.inject(rampUsersPerSec(10) to writePerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
 
-    ,readPerson.inject(rampUsersPerSec(10) to readPerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
-    ,readMessage.inject(rampUsersPerSec(10) to readPerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
-    ,readComment.inject(rampUsersPerSec(10) to readPerSecPerQuery during (rampupDurationSec seconds), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+  setUp(
+    insertPerson.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    ,insertMessage.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+    ,insertComment.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds))
+
+    ,readPerson.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readMessage.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
+    ,readComment.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds))
   ).protocols(cqlConfig)
 
 //  session.execute("delete from jvm.test where name='gatling'")
 
+  private def normalRampup(target: Int) = {
+    rampUsersPerSec(100) to target during (rampupDurationSec seconds)
+  }
+
+  private def smalRampup() = {
+    rampUsersPerSec(1) to 100 during (10 seconds)
+  }
 }
