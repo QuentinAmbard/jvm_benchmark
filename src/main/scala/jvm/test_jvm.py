@@ -171,11 +171,11 @@ class Test:
         process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
         process_sar.wait()
-        command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar"
+        command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar "
         if options.ssh == "":
-            command_copy_sar += "cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
+            command_copy_sar += " cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
         else:
-            command_copy_sar += "scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
+            command_copy_sar += " scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
         print(command_copy_sar)
         process_copy_sar = subprocess.Popen(command_copy_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_copy_sar.wait()
