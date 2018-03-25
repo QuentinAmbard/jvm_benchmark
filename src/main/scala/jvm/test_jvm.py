@@ -25,6 +25,9 @@ parser.add_option("-w", "--writePerSecPerQuery", default="1000")
 parser.add_option("-r", "--readPerSecPerQuery", default="1000")
 parser.add_option("-j", "--oracleJdkPath", default="/opt/jdk1.8.0_161/bin/java")
 parser.add_option("-a", "--zingJdkPath", default="/opt/zing/zing-jdk1.8.0-18.02.0.0-4-x86_64/bin/java")
+parser.add_option("-t", "--sarViewFolder", default="/root/jvm_benchmark/src/main/scala/jvm/sarviewer-master")
+
+
 
 
 (options, args) = parser.parse_args()
@@ -161,11 +164,18 @@ class Test:
         command = """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        command_sar = "sarviewer-master/data_collector.sh -n %d -i 1 && mkdir %s && cp -r sarviewer-master/graphs/* %s && /opt/jdk1.8.0_161/bin/jinfo `pgrep -f cassandra` > %s " % (testDurationSec + 20, outputFolder+"/"+self.name+"-sar", outputFolder+"/"+self.name+"-sar", outputFolder+"/"+self.name+"-sar/jvm.info")
+        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /opt/jdk1.8.0_161/bin/jinfo `pgrep -f cassandra` > %s " % (testDurationSec + 20, options.sarViewFolder+"graphs/jvm.info"))
         print(command_sar)
         process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
         process_sar.wait()
+        if options.ssh == "":
+            command_copy_sar = "cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
+        else:
+            command_copy_sar = "scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
+        print(command_copy_sar)
+        process_copy_sar = subprocess.Popen(command_copy_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process_copy_sar.wait()
         print("test done")
 
     def test(self):
