@@ -14,6 +14,8 @@ import os
 #git reset --hard origin/master && git pull
 #python3.4 ./test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2" --dseFolder="/root/dse-5.1.7" --dseHost="37.187.28.208" --ssh="root@37.187.28.208" --testDurationSec="20" --writePerSecPerQuery="1000" --readPerSecPerQuery="1000"
 #python3.4 ./test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2" --dseFolder="/root/dse-5.1.7" --dseHost="37.187.28.208" --ssh="" --testDurationSec="20" --writePerSecPerQuery="1000" --readPerSecPerQuery="1000"
+#git reset --hard origin/master && git pull && python3.4 ./test_jvm.py --gatlingFolder="/root/gatling-charts-highcharts-bundle-2.2.2" --dseFolder="/root/dse-5.1.7" --dseHost="10.10.10.3" --ssh="root@195.154.78.138" --testDurationSec="20" --writePerSecPerQuery="10000" --readPerSecPerQuery="10000" --sarViewFolder="/root/jvm_benchmark/src/main/scala/jvm/sarviewer-master"
+
 
 parser = OptionParser()
 parser.add_option("-g", "--gatlingFolder", default="/home/quentin/tools/gatling-charts-highcharts-bundle-2.2.2")
