@@ -140,9 +140,9 @@ class Test:
             cluster = Cluster([options.dseHost])
             session = cluster.connect()
             session.execute("create keyspace if not exists jvm with replication = {'class': 'SimpleStrategy', 'replication_factor': 1} AND durable_writes = false ")
-            session.execute("create table if not exists jvm.person (id int, firstname text, lastname text, age int, city text, address text, zipcode text, description text, primary key (id)) WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}")
-            session.execute("create table if not exists jvm.message (person_id int, id int, header text, content blob, content2 blob, score float, primary key ((person_id), id)) WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}")
-            session.execute("create table if not exists jvm.comment (id int, time timestamp, content text, like int, categories map<text, text>, primary key ((id), time)) WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}")
+            session.execute("create table if not exists jvm.person (id int, firstname text, lastname text, age int, city text, address text, zipcode text, description text, primary key (id)) ") #WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}
+            session.execute("create table if not exists jvm.message (person_id int, id int, header text, content blob, content2 blob, score float, primary key ((person_id), id)) ") #WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}
+            session.execute("create table if not exists jvm.comment (id int, time timestamp, content text, like int, categories map<text, text>, primary key ((id), time)) ") #WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}
             session.execute("truncate table jvm.person")
             session.execute("truncate table jvm.comment")
             session.execute("truncate table jvm.message")
@@ -196,7 +196,11 @@ class Test:
 # plt.savefig('foo.png', dpi=200)
 
 
-test1 = Test("test-witTLAB", "31G", "31G")
+test1 = Test("test-heap-size-31GB", "31G", "31G")
 test1.test()
+
+test1 = Test("test-heap-size-32GB", "32G", "32G")
+test1.test()
+
 #test1.resetDSE()
 #test1.startGatlingTest()
