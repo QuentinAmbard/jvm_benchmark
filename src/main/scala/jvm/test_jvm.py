@@ -166,24 +166,25 @@ class Test:
         command = """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /opt/jdk1.8.0_161/bin/jinfo `pgrep -f cassandra` > %s " % (testDurationSec + 20, options.sarViewFolder+"/graphs/jvm.info"))
+        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /opt/jdk1.8.0_161/bin/jinfo $(pgrep -f cassandra) > %s " % (testDurationSec + 20, options.sarViewFolder+"/graphs/jvm.info"))
         print(command_sar)
         process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
         process_sar.wait()
-        command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar && "
+        command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar "
         if options.ssh == "":
-            command_copy_sar += "cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar/"
-            command_copy_sar += "cp -r /var/log/cassandra/gc.log "+outputFolder+"/"+self.name+"-sar/"
+            command_copy_sar += "&& cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar/"
+            command_copy_sar += "&& cp -r /var/log/cassandra/gc.log "+outputFolder+"/"+self.name+"-sar/"
         else:
-            command_copy_sar += "scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
-            command_copy_sar += "scp -r "+options.ssh+":/var/log/cassandra/gc.log "+outputFolder+"/"+self.name+"-sar/"
+            command_copy_sar += "&& scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
+            command_copy_sar += "&& scp -r "+options.ssh+":/var/log/cassandra/gc.log "+outputFolder+"/"+self.name+"-sar/"
         print(command_copy_sar)
         process_copy_sar = subprocess.Popen(command_copy_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_copy_sar.wait()
         print("test done")
 
     def test(self):
+        print("Starting test "+self.name)
         self.loadConfigurationFile()
         self.restartDSE()
         self.resetDSE()
