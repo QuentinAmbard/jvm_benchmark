@@ -174,7 +174,7 @@ class Test:
         command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar "
         if options.ssh == "":
             command_copy_sar += "&& cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar/"
-            command_copy_sar += "&& cp -r /var/log/cassandra/gc.log "+outputFolder+"/"+self.name+"-sar/"
+            command_copy_sar += "&& cp -r /var/log/cassandra/gc.log* "+outputFolder+"/"+self.name+"-sar/"
         else:
             command_copy_sar += "&& scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
             command_copy_sar += "&& scp -r "+options.ssh+":/var/log/cassandra/gc.log "+outputFolder+"/"+self.name+"-sar/"
