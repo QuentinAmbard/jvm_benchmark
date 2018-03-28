@@ -166,7 +166,7 @@ class Test:
         command = """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /opt/jdk1.8.0_161/bin/jinfo $(pgrep -f cassandra) > %s " % (testDurationSec + 20, options.sarViewFolder+"/graphs/jvm.info"))
+        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && && /root/dump_jvm.sh " % (testDurationSec + 20))
         print(command_sar)
         process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
