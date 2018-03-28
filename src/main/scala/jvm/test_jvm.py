@@ -163,7 +163,7 @@ class Test:
         process.wait()
         time.sleep(2)
         print("Running "+self.name)
-        command = """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
+        command = """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /root/dump_jvm.sh " % (testDurationSec + 50))
@@ -197,11 +197,13 @@ class Test:
 # plt.savefig('foo.png', dpi=200)
 
 
-test1 = Test("test-heap-size-31GB", "31G", "31G")
-test1.test()
+for i in range(8, 88, 4):
+    test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=300)
+    test1.test()
+    time.sleep(2)
 
-test1 = Test("test-heap-size-32GB", "32G", "32G")
-test1.test()
+# test1 = Test("test-heap-size-32GB", "32G", "32G")
+# test1.test()
 
 #test1.resetDSE()
 #test1.startGatlingTest()
