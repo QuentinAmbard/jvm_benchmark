@@ -163,7 +163,7 @@ class Test:
         process.wait()
         time.sleep(2)
         print("Running "+self.name)
-        command = """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
+        command = """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -nr -rf %s -on %s""" % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name)
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /root/dump_jvm.sh " % (testDurationSec + 50))

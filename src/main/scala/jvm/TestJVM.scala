@@ -122,7 +122,7 @@ class TestJVM extends Simulation {
   }).toArray
 
 
-  var c = 0
+  var c = 10000
   val insertCommentQ = session.prepare("""INSERT INTO jvm.comment (id, time, content, like, categories) VALUES (?,?,?,?,?)""")
   val insertComment = scenario("insert comment").repeat(1) {
     feed(Iterator.continually({
