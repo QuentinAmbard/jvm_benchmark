@@ -72,7 +72,7 @@ class TestJVM extends Simulation {
 
   val cqlConfig = cql.session(session) //Initialize Gatling DSL with your session
 
-  var p = 100000
+  var p = 0
 
   val insertPersonQ = session.prepare("""INSERT INTO jvm.person (id, firstname, lastname, age, city, address, zipcode, description) VALUES (?,?,?,?,?,?,?,?)""")
   val insertPerson = scenario("insert Person").repeat(1) {
@@ -94,7 +94,7 @@ class TestJVM extends Simulation {
     )
   }
 
-  var m = 100000
+  var m = 0
   val insertMessageQ = session.prepare("""INSERT INTO jvm.message (person_id, id, header, content, content2, score) VALUES (?,?,?,?,?,?)""")
   val insertMessage = scenario("insert message").repeat(1) {
     feed(Iterator.continually({
@@ -122,7 +122,7 @@ class TestJVM extends Simulation {
   }).toArray
 
 
-  var c = 100000
+  var c = 0
   val insertCommentQ = session.prepare("""INSERT INTO jvm.comment (id, time, content, like, categories) VALUES (?,?,?,?,?)""")
   val insertComment = scenario("insert comment").repeat(1) {
     feed(Iterator.continually({
