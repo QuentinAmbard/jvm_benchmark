@@ -159,7 +159,7 @@ class Test:
 
     def startGatlingTest(self):
         print("Warming up jvm, (60 sec gatling stress)")
-        process = subprocess.Popen("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr > """+self.name+"""-warmup.log.txt 2>&1 """, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
         time.sleep(20)
         print("Running "+self.name)
