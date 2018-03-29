@@ -158,19 +158,19 @@ class Test:
 
 
     def startGatlingTest(self):
-        print("Warming up jvm, (10 sec gatling stress)")
-        process = subprocess.Popen("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=10 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        print("Warming up jvm, (60 sec gatling stress)")
+        process = subprocess.Popen("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr""", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
-        time.sleep(2)
+        time.sleep(20)
         print("Running "+self.name)
-        command = """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -nr -rf %s -on %s > test-heap-size-8GB-300ms.txt 2>&1 """ % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name, self.name+".log.txt")
+        command = """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -nr -rf %s -on %s > %s 2>&1 """ % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name, self.name+".log.txt")
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /root/dump_jvm.sh " % (testDurationSec + 50))
         print(command_sar)
-        # process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
-        # process_sar.wait()
+        process_sar.wait()
         command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar "
         if options.ssh == "":
             command_copy_sar += "&& cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar/"
