@@ -144,11 +144,11 @@ class TestJVM extends Simulation {
   val readPersonQ = session.prepare("""SELECT * from jvm.person where id=? """)
   val readPerson = scenario("read person").repeat(1) {
     feed(Iterator.continually({
-      rp+=1
-      if(rp>p){
-        rp = 0
-      }
-      Map("id" -> rc)
+//      rp+=1
+//      if(rp>p){
+//        rp = 0
+//      }
+      Map("id" -> random.nextInt(p))
     })).exec(cql("read person").execute(readPersonQ)
       .withParams("${id}")
     )
@@ -158,11 +158,11 @@ class TestJVM extends Simulation {
   val readMessageQ = session.prepare("""SELECT * from jvm.message where person_id=? """)
   val readMessage = scenario("read message").repeat(1) {
     feed(Iterator.continually({
-      rm+=1
-      if(rm>m){
-        rm = 0
-      }
-      Map("person_id" -> rc)
+//      rm+=1
+//      if(rm>m){
+//        rm = 0
+//      }
+      Map("person_id" -> random.nextInt(p))
     })).exec(cql("read message").execute(readMessageQ)
       .withParams("${person_id}")
       .consistencyLevel(ConsistencyLevel.ONE)
@@ -174,11 +174,11 @@ class TestJVM extends Simulation {
   val readCommentQ = session.prepare("""SELECT * from jvm.comment where id=? """)
   val readComment = scenario("read comment").repeat(1) {
     feed(Iterator.continually({
-      rc+=1
-      if(rc>c){
-        rc = 0
-      }
-      Map("id" -> rc)
+//      rc+=1
+//      if(rc>c){
+//        rc = 0
+//      }
+      Map("id" -> random.nextInt(c))
     })).exec(cql("read comment").execute(readCommentQ)
       .withParams("${id}")
       .consistencyLevel(ConsistencyLevel.ONE)
