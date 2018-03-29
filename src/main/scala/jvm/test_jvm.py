@@ -197,7 +197,7 @@ class Test:
 # plt.savefig('foo.png', dpi=200)
 
 
-for i in range(8, 88, 4):
+for i in range(8, 80, 2):
     test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=300)
     test1.test()
     time.sleep(2)

@@ -27,7 +27,7 @@ class TestJVM extends Simulation {
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
-  val rampupDurationSec = getProperty("rampupDurationSec", "40").toInt
+  val rampupDurationSec = getProperty("rampupDurationSec", "80").toInt
   val maxEntitiesPerTable = getProperty("maxEntitiesPerTable", "100000").toInt
 
   Random.setSeed(1321254L)
@@ -199,10 +199,10 @@ class TestJVM extends Simulation {
 //  session.execute("delete from jvm.test where name='gatling'")
 
   private def normalRampup(target: Int) = {
-    rampUsersPerSec(100) to target during (rampupDurationSec seconds)
+    rampUsersPerSec(500) to target during (rampupDurationSec seconds)
   }
 
   private def smalRampup() = {
-    rampUsersPerSec(1) to 100 during (10 seconds)
+    rampUsersPerSec(1) to 500 during (20 seconds)
   }
 }
