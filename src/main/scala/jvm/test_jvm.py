@@ -151,7 +151,7 @@ class Test:
         except:
             time.sleep(1)
             print("trying to connect to"+options.dseHost)
-            if count > 60:
+            if count > 120:
                 print("ERROR, DSE hasn't restarted, something is wrong...")
             else:
                 self.resetDSE(count+1)
