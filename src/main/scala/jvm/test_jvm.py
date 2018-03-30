@@ -55,6 +55,7 @@ class Test:
         self.enableHsperfdata()
         self.setXss(xss)
         self.java = "alternatives --set java "+options.oracleJdkPath
+        self.clean_memory_command = "sync && echo 3 > /proc/sys/vm/drop_caches && "
 
     def useZing(self):
         self.java = "alternatives --set java "+options.zingJdkPath
@@ -128,7 +129,7 @@ class Test:
         print("killing DSE:"+command)
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
-        command = self.sshCommand(self.java+" && "+options.dseFolder+"/bin/dse cassandra -R")
+        command = self.sshCommand(self.clean_memory_command+self.java+" && "+options.dseFolder+"/bin/dse cassandra -R")
         print("Restarting DSE"+command)
         subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         #subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -159,14 +160,15 @@ class Test:
 
     def startGatlingTest(self):
         print("Warming up jvm, (60 sec gatling stress)")
-        process = subprocess.Popen("""alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr > """+self.name+"""-warmup.log.txt 2>&1 """, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        #from time to time Zing won't start if it can't allocate the required heap memory (even if it's only used by buffers). drop all cache before starting gatling.
+        process = subprocess.Popen(self.clean_memory_command + """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr > """+self.name+"""-warmup.log.txt 2>&1 """, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process.wait()
         time.sleep(20)
         print("Running "+self.name)
-        command = """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -nr -rf %s -on %s > %s 2>&1 """ % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name, self.name+".log.txt")
+        command = self.clean_memory_command + """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -nr -rf %s -on %s > %s 2>&1 """ % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name, self.name+".log.txt")
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /root/dump_jvm.sh " % (testDurationSec + 50))
+        command_sar = self.sshCommand(options.sarViewFolder+"/data_collector.sh -n %d -i 1 && /root/dump_jvm.sh " % (testDurationSec + 80))
         print(command_sar)
         process_sar = subprocess.Popen(command_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_injector.wait()
@@ -197,7 +199,12 @@ class Test:
 # plt.savefig('foo.png', dpi=200)
 
 
-for i in range(8, 80, 2):
+for i in range(22, 50, 2):
+    test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=300)
+    test1.test()
+    time.sleep(2)
+
+for i in [62, 66, 70, 74, 78]:
     test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=300)
     test1.test()
     time.sleep(2)
