@@ -199,15 +199,11 @@ class Test:
 # plt.savefig('foo.png', dpi=200)
 
 
-for i in range(22, 50, 2):
-    test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=300)
-    test1.test()
-    time.sleep(2)
-
-for i in [62, 66, 70, 74, 78]:
-    test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=300)
-    test1.test()
-    time.sleep(2)
+for maxPause in range([300, 400, 500, 600, 200, 100, 50]):
+    for i in range(8, 82, 2):
+        test1 = Test("test-heap-size-"+str(i)+"GB-300ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
+        test1.test()
+        time.sleep(2)
 
 # test1 = Test("test-heap-size-32GB", "32G", "32G")
 # test1.test()
