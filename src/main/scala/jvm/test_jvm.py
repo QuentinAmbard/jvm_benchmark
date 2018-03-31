@@ -198,7 +198,13 @@ class Test:
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
 
-#300,
+#TODO a refaire: de 8 a 16BG avec 300ms ,
+maxPause=300
+for i in range(8, 18, 2):
+    test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
+    test1.test()
+    time.sleep(2)
+
 for maxPause in [400, 500, 600, 200, 100, 50]:
     for i in range(8, 82, 4):
         test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
