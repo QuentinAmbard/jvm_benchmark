@@ -198,15 +198,16 @@ class Test:
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
 
-#TODO a refaire: de 8 a 16BG avec 300ms ,
-maxPause=300
-for i in range(8, 18, 2):
-    test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
-    test1.test()
-    time.sleep(2)
+test1 = Test("test-heap-size-36GB-500ms", "36G", "36G", G1MaxGCPauseMilli=500)
+test1.test()
+time.sleep(2)
 
-for maxPause in [400, 500, 600, 200, 100, 50]:
-    for i in range(8, 82, 4):
+test1 = Test("test-heap-size-12GB-400ms", "12G", "12G", G1MaxGCPauseMilli=400)
+test1.test()
+time.sleep(2)
+
+for maxPause in [50]:#[400, 500, 600, 200, 100, 50]:
+    for i in range(16, 82, 4):
         test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
         test1.test()
         time.sleep(2)
@@ -216,3 +217,4 @@ for maxPause in [400, 500, 600, 200, 100, 50]:
 
 #test1.resetDSE()
 #test1.startGatlingTest()
+#tar: test-heap-size-36GB-500ms-1522540732002/simulation.log: file changed as we read it
