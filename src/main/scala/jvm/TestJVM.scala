@@ -57,13 +57,13 @@ class TestJVM extends Simulation {
 
   val session = cluster.connect() //Your C* session
 
-  val firstnames = (0 to 100000).map(_ => getRandomStr(30)).toArray
-  val lastnames = (0 to 100000).map(_ => getRandomStr(50)).toArray
-  val cities = (0 to 10000).map(_ => getRandomStr(10+random.nextInt(10))).toArray
-  val addresses = (0 to 1000000).map(_ => getRandomStr(20+random.nextInt(50))).toArray
-  val zipcodes = (0 to 10000).map(_ => getRandomStr(7)).toArray
-  val contents = (0 to 10000).map(_ => getRandomStr(2000+random.nextInt(500))).toArray
-  val smallContents = (0 to 10000).map(i => {
+  val firstnames = (0 to 10).map(_ => getRandomStr(30)).toArray
+  val lastnames = (0 to 10).map(_ => getRandomStr(50)).toArray
+  val cities = (0 to 10).map(_ => getRandomStr(10+random.nextInt(10))).toArray
+  val addresses = (0 to 10).map(_ => getRandomStr(20+random.nextInt(50))).toArray
+  val zipcodes = (0 to 10).map(_ => getRandomStr(7)).toArray
+  val contents = (0 to 10).map(_ => getRandomStr(2000+random.nextInt(500))).toArray
+  val smallContents = (0 to 10).map(i => {
     val b = new Array[Byte](random.nextInt(100) + 500)
     random.nextBytes(b)
     ByteBuffer.wrap(b)
@@ -72,6 +72,7 @@ class TestJVM extends Simulation {
 
   val cqlConfig = cql.session(session) //Initialize Gatling DSL with your session
 
+  var maxEntry = 8000 * 60
   var p = 0
 
   val insertPersonQ = session.prepare("""INSERT INTO jvm.person (id, firstname, lastname, age, city, address, zipcode, description) VALUES (?,?,?,?,?,?,?,?)""")
