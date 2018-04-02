@@ -157,7 +157,6 @@ class Test:
                 self.resetDSE(count+1)
 
 
-
     def startGatlingTest(self):
         print("Warming up jvm, (60 sec gatling stress)")
         #from time to time Zing won't start if it can't allocate the required heap memory (even if it's only used by buffers). drop all cache before starting gatling.
@@ -180,6 +179,8 @@ class Test:
         else:
             command_copy_sar += "&& scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
             command_copy_sar += "&& scp -r "+options.ssh+":/var/log/cassandra/gc.log* "+outputFolder+"/"+self.name+"-sar/"
+            command_copy_sar += "&& for i in "+outputFolder+"/"+self.name+"* ; do tar -I pigz -cvf $i.tar.gz $i  --remove-files; done"
+
         print(command_copy_sar)
         process_copy_sar = subprocess.Popen(command_copy_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         process_copy_sar.wait()
