@@ -158,12 +158,13 @@ class Test:
 
 
     def startGatlingTest(self):
-        print("Warming up jvm, (60 sec gatling stress)")
-        #from time to time Zing won't start if it can't allocate the required heap memory (even if it's only used by buffers). drop all cache before starting gatling.
-        process = subprocess.Popen(self.clean_memory_command + """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr > """+self.name+"""-warmup.log.txt 2>&1 """, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        process.wait()
-        time.sleep(20)
+        # print("Warming up jvm, (60 sec gatling stress)")
+        # #from time to time Zing won't start if it can't allocate the required heap memory (even if it's only used by buffers). drop all cache before starting gatling.
+        # process = subprocess.Popen(self.clean_memory_command + """alternatives --set java """+options.oracleJdkPath+""" && export JAVA_OPTS="-DcontactPoint="""+options.dseHost+""" -DtestDurationSec=60 -DwritePerSecPerQuery=5000 -DreadPerSecPerQuery=5000" && """+options.gatlingFolder+"""/bin/gatling.sh -m -nr > """+self.name+"""-warmup.log.txt 2>&1 """, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # process.wait()
+        # time.sleep(20)
         print("Running "+self.name)
+        # #from time to time Zing won't start if it can't allocate the required heap memory (even if it's only used by buffers). drop all cache before starting gatling.
         command = self.clean_memory_command + """alternatives --set java """+options.zingJdkPath+""" && export JAVA_OPTS="-DcontactPoint=%s -DtestDurationSec=%d -DwritePerSecPerQuery=%d -DreadPerSecPerQuery=%d" && %s/bin/gatling.sh -m -nr -rf %s -on %s > %s 2>&1 """ % (options.dseHost, testDurationSec, writePerSecPerQuery, readPerSecPerQuery, options.gatlingFolder, outputFolder, self.name, self.name+".log.txt")
         print(command)
         process_injector = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
