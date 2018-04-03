@@ -195,6 +195,12 @@ class Test:
 
 
 
+#for i in *.tar.gz; do tar -I pigz -xvf $i && /root/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro ${var::-7} && rm -rf ${var::-7}/simulation.log; done
+
+
+#head -n 1 simulation.log > test/simulation.log
+#tail -n +300 simulation-small.log >> test/simulation.log
+
 # plt.plot([1,2,3,4])
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
