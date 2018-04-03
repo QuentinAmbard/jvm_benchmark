@@ -217,7 +217,7 @@ class Test:
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
 
-test1 = Test("test-heap-size-36GB-500ms", "36G", "36G", G1MaxGCPauseMilli=500)
+test1 = Test("test-heap-size-36GB-500ms", "8G", "8G", G1MaxGCPauseMilli=100)
 test1.test()
 time.sleep(2)
 
