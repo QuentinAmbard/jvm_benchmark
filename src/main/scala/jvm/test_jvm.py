@@ -196,7 +196,18 @@ class Test:
 
 
 
-#for i in *.tar.gz; do tar -I pigz -xvf $i && /root/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro ${var::-7} && rm -rf ${var::-7}/simulation.log; done
+# 8k/sec * 6 = 2880000/min, 5760000/2min
+# remove the 2 first minutes && remove the last minute :
+
+
+# for i in *.tar.gz;
+# do tar -I pigz -xvf $i -C /root/results && \
+# head -n 1 "/root/results/${i::-7}/simulation.log" > "/root/results/${i::-7}/simulation-final.log" && \
+# tail -n +5760000 "/root/results/${i::-7}/simulation.log" | head -n -2880000 >> "/root/results/${i::-7}/simulation-final.log" && \
+# mv "/root/results/${i::-7}/simulation-final.log" "/root/results/${i::-7}/simulation.log" && \
+# /home/quentin/tools/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro "/root/results/${i::-7}" && \
+# rm -rf "/root/results/${i::-7}/simulation.log";
+# done
 
 
 #head -n 1 simulation.log > test/simulation.log
