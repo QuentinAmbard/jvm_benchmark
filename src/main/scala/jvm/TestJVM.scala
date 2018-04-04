@@ -88,7 +88,7 @@ class TestJVM extends Simulation {
         "city" -> s"$p${getRandom(cities)}",
         "address" -> s"$p${getRandom(addresses)}",
         "zipcode" -> s"$p${getRandom(zipcodes)}",
-        "description" -> s"$p${contents(0)}"
+        "description" -> s"$p${getRandom(contents)}"
       )
     })).exec(cql("insert person").execute(insertPersonQ)
       .withParams("${id}", "${firstname}", "${lastname}", "${age}", "${city}", "${address}", "${zipcode}", "${description}")
@@ -105,8 +105,8 @@ class TestJVM extends Simulation {
         "person_id" -> p/10,
         "id" -> m ,
         "header"  -> getRandom(lastnames),
-        "content" -> smallContents(0),
-        "content2" -> smallContents(1),
+        "content" -> getRandom(smallContents),
+        "content2" -> getRandom(smallContents),
         "score" -> random.nextFloat()
       )
     })).exec(cql("insert message").execute(insertMessageQ)
