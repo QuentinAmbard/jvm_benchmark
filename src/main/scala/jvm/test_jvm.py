@@ -103,7 +103,7 @@ class Test:
     def setConcGCThreads(self, threads):
         self.params["g1ConcGCThreads"] = "-XX:ConcGCThreads="+str(threads)
 
-    def setObjectAlignment(selfs, value):
+    def setObjectAlignment(self, value):
         self.params["ObjectAlignmentInBytes"] = "-XX:ObjectAlignmentInBytes="+str(value)
 
     def useCompressedOops(self):
