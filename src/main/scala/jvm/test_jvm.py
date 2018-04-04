@@ -131,7 +131,7 @@ class Test:
         return "ssh "+options.ssh+" '"+command+"'"
 
     def restartDSE(self):
-        command = self.sshCommand("kill -9 $(pgrep -f cassandra) && rm -rf /home/cassandra/5.1.7/cassandra/commitlog/* && rm -rf /home/cassandra/5.1.7/cassandra/data/jvm/*")
+        command = self.sshCommand("kill -9 $(pgrep -f cassandra) && rm -rf /home/cassandra/5.1.7/cassandra/commitlog/* && rm -rf /home/cassandra/5.1.7/cassandra/data/jvm/")
         print("killing DSE:"+command)
         subprocess.call(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(1)
