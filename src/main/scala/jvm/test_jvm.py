@@ -181,12 +181,13 @@ class Test:
         process_sar.wait()
         command_copy_sar = "mkdir -p "+outputFolder+"/"+self.name+"-sar "
         if options.ssh == "":
-            command_copy_sar += "&& cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar/"
-            command_copy_sar += "&& cp -r /var/log/cassandra/gc.log* "+outputFolder+"/"+self.name+"-sar/"
+            command_copy_sar += "&& cp -r "+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar/ "
+            command_copy_sar += "&& cp -r /var/log/cassandra/gc.log* "+outputFolder+"/"+self.name+"-sar/ "
         else:
-            command_copy_sar += "&& scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar"
-            command_copy_sar += "&& scp -r "+options.ssh+":/var/log/cassandra/gc.log* "+outputFolder+"/"+self.name+"-sar/"
-            command_copy_sar += "&& for i in "+outputFolder+"/"+self.name+"* ; do tar -I pigz -cvf $i.tar.gz $i  --remove-files; done"
+            command_copy_sar += "&& scp -r "+options.ssh+":"+options.sarViewFolder+"/graphs/* "+outputFolder+"/"+self.name+"-sar "
+            command_copy_sar += "&& scp -r "+options.ssh+":/var/log/cassandra/gc.log* "+outputFolder+"/"+self.name+"-sar/ "
+            command_copy_sar += "&& cd "+outputFolder+" "
+            command_copy_sar += "&& for i in "+self.name+"* ; do tar -I pigz -cvf $i.tar.gz $i  --remove-files; done"
 
         print(command_copy_sar)
         process_copy_sar = subprocess.Popen(command_copy_sar, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
