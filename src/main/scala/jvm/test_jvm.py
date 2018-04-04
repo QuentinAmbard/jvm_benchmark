@@ -103,6 +103,12 @@ class Test:
     def setConcGCThreads(self, threads):
         self.params["g1ConcGCThreads"] = "-XX:ConcGCThreads="+str(threads)
 
+    def setObjectAlignment(selfs, value):
+        self.params["ObjectAlignmentInBytes"] = "-XX:ObjectAlignmentInBytes="+str(value)
+
+    def useCompressedOops(self):
+        self.params["UseCompressedOops"] = "-XX:-UseCompressedOops"
+
     def loadConfigurationFile(self):
         with open('./jvm.options.template') as infile, open('./jvm.options', 'w') as outfile:
             for line in infile:
@@ -141,9 +147,9 @@ class Test:
             cluster = Cluster([options.dseHost])
             session = cluster.connect()
             session.execute("create keyspace if not exists jvm with replication = {'class': 'SimpleStrategy', 'replication_factor': 1} AND durable_writes = false ")
-            session.execute("create table if not exists jvm.person (id int, firstname text, lastname text, age int, city text, address text, zipcode text, description text, primary key (id)) ") #WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}
-            session.execute("create table if not exists jvm.message (person_id int, id int, header text, content blob, content2 blob, score float, primary key ((person_id), id)) ") #WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}
-            session.execute("create table if not exists jvm.comment (id int, time timestamp, content text, like int, categories map<text, text>, primary key ((id), time)) ") #WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND compression = {'sstable_compression' : ''} AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}
+            session.execute("create table if not exists jvm.person (id int, firstname text, lastname text, age int, city text, address text, zipcode text, description text, primary key (id)) WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}")
+            session.execute("create table if not exists jvm.message (person_id int, id int, header text, content blob, content2 blob, score float, primary key ((person_id), id)) WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}")
+            session.execute("create table if not exists jvm.comment (id int, time timestamp, content text, like int, categories map<text, text>, primary key ((id), time)) WITH compaction= { 'class': 'MemoryOnlyStrategy' } AND caching = {'keys':'NONE', 'rows_per_partition':'NONE'}")
             session.execute("truncate table jvm.person")
             session.execute("truncate table jvm.comment")
             session.execute("truncate table jvm.message")
@@ -197,39 +203,51 @@ class Test:
 
 
 # 8k/sec * 6 = 2880000/min, 5760000/2min
-# remove the 2 first minutes && remove the last minute :
+# remove the 2 first minutes && remove the last minute.
 
-
-# for i in *.tar.gz;
-# do tar -I pigz -xvf $i -C /root/results && \
-# head -n 1 "/root/results/${i::-7}/simulation.log" > "/root/results/${i::-7}/simulation-final.log" && \
-# tail -n +5760000 "/root/results/${i::-7}/simulation.log" | head -n -2880000 >> "/root/results/${i::-7}/simulation-final.log" && \
-# mv "/root/results/${i::-7}/simulation-final.log" "/root/results/${i::-7}/simulation.log" && \
-# /home/quentin/tools/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro "/root/results/${i::-7}" && \
-# rm -rf "/root/results/${i::-7}/simulation.log";
+# unalias mv
+# unset -f mv
+# for i in  *28GB-600* ;
+# do tar -I pigz -xvf $i -C /root/results2 && \
+# head -n 1 "/root/results2/${i::-7}/simulation.log" > "/root/results2/${i::-7}/simulation-final.log" && \
+# tail -n +5760000 "/root/results2/${i::-7}/simulation.log" | head -n -5760000 >> "/root/results2/${i::-7}/simulation-final.log" && \
+# mv -f "/root/results2/${i::-7}/simulation-final.log" "/root/results2/${i::-7}/simulation.log" && \
+# /root/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro "/root/results2/${i::-7}" && \
+# rm -rf "/root/results2/${i::-7}/simulation.log";
 # done
-
-
-#head -n 1 simulation.log > test/simulation.log
-#tail -n +300 simulation-small.log >> test/simulation.log
+#
 
 # plt.plot([1,2,3,4])
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
 
-test1 = Test("test-heap-size-36GB-500ms", "8G", "8G", G1MaxGCPauseMilli=100)
-test1.test()
-time.sleep(2)
-
-test1 = Test("test-heap-size-12GB-400ms", "12G", "12G", G1MaxGCPauseMilli=400)
-test1.test()
-time.sleep(2)
-
-for maxPause in [50]:#[400, 500, 600, 200, 100, 50]:
-    for i in range(16, 82, 4):
-        test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
+#32GB vs 31GB
+def test_32_31():
+    maxPause = 300
+    for i in range(31, 32):
+        test1 = Test("test-32-"+str(i)+"GB-"+str(maxPause)+"ms-rs-default", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
         test1.test()
         time.sleep(2)
+    test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-32", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("32m")
+    test1.test()
+    time.sleep(2)
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-byte-alignment-16", "32G", "32G", G1MaxGCPauseMilli=maxPause)
+    test1.setObjectAlignment(16)
+    test1.useCompressedOops()
+    test1.test()
+    time.sleep(2)
+
+
+def test_heap_pause_time():
+    #Heap size & pause time
+    for maxPause in [50, 100, 200, 400, 500, 600]:
+        for i in range(16, 82, 4):
+            test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
+            test1.test()
+            time.sleep(2)
+
+test_32_31()
 
 # test1 = Test("test-heap-size-32GB", "32G", "32G")
 # test1.test()

@@ -153,6 +153,12 @@
 #-XX:ParallelGCThreads=16
 #${g1ParallelGCThreads}
 
+#-XX:ObjectAlignmentInBytes=8
+#${ObjectAlignmentInBytes}
+
+#-XX:-UseCompressedOops
+#${UseCompressedOops}
+
 #-XX:G1HeapRegionSize=4194304
 #${g1RegionSize}
 
