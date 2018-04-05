@@ -225,14 +225,19 @@ class Test:
 #32GB vs 31GB
 def test_32_31():
     maxPause = 300
-    for i in range(31, 32):
-        test1 = Test("test-32-"+str(i)+"GB-"+str(maxPause)+"ms-rs-default", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
-        test1.test()
-        time.sleep(2)
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-rs-16", "32G", "32G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.useCompressedOops()
+    test1.test()
+    time.sleep(2)
     test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-32", "31G", "31G", G1MaxGCPauseMilli=maxPause)
     test1.setRegionSize("32m")
     test1.test()
     time.sleep(2)
+    for i in range(31, 33):
+        test1 = Test("test-32-"+str(i)+"GB-"+str(maxPause)+"ms-rs-default", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
+        test1.test()
+        time.sleep(2)
     test1 = Test("test-32-32GB-"+str(maxPause)+"ms-byte-alignment-16", "32G", "32G", G1MaxGCPauseMilli=maxPause)
     test1.setObjectAlignment(16)
     test1.useCompressedOops()
