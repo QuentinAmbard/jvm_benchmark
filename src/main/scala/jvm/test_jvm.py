@@ -248,12 +248,13 @@ def test_32_31():
 def test_heap_pause_time():
     #Heap size & pause time
     for maxPause in [50, 100, 200, 400, 500, 600]:
-        for i in range(16, 82, 4):
+        for i in range(8, 62, 4):
             test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
             test1.test()
             time.sleep(2)
 
-test_32_31()
+#test_32_31()
+test_heap_pause_time()
 
 # test1 = Test("test-heap-size-32GB", "32G", "32G")
 # test1.test()
