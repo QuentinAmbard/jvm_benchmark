@@ -206,18 +206,19 @@ class Test:
 # 8k/sec * 6 = 2880000/min, 5760000/2min
 # remove the 2 first minutes && remove the last minute.
 
+# sleep 120
 # unalias mv
 # unset -f mv
-# for i in  *28GB-600* ;
-# do tar -I pigz -xvf $i -C /root/results2 && \
-# head -n 1 "/root/results2/${i::-7}/simulation.log" > "/root/results2/${i::-7}/simulation-final.log" && \
-# tail -n +5760000 "/root/results2/${i::-7}/simulation.log" | head -n -5760000 >> "/root/results2/${i::-7}/simulation-final.log" && \
-# mv -f "/root/results2/${i::-7}/simulation-final.log" "/root/results2/${i::-7}/simulation.log" && \
-# /root/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro "/root/results2/${i::-7}" && \
-# rm -rf "/root/results2/${i::-7}/simulation.log";
+# for i in  *20GB* ;
+# do tar -I pigz -xvf $i -C /root/results && \
+# head -n 1 "/root/results/${i::-7}/simulation.log" > "/root/results/${i::-7}/simulation-final.log" && \
+# tail -n +5760000 "/root/results/${i::-7}/simulation.log" | head -n -2880000 >> "/root/results/${i::-7}/simulation-final.log" && \
+# mv -f "/root/results/${i::-7}/simulation-final.log" "/root/results/${i::-7}/simulation.log" && \
+# /root/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro "/root/results/${i::-7}" && \
+# rm -rf "/root/results/${i::-7}/simulation.log";
 # done
 #
-
+#sleep 30; for i in  *48GB* ; do tar -I pigz -xvf $i -C /root/results && head -n 1 "/root/results/${i::-7}/simulation.log" > "/root/results/${i::-7}/simulation-final.log" && tail -n +5760000 "/root/results/${i::-7}/simulation.log" | head -n -2880000 >> "/root/results/${i::-7}/simulation-final.log" && mv -f "/root/results/${i::-7}/simulation-final.log" "/root/results/${i::-7}/simulation.log" && /root/gatling-charts-highcharts-bundle-2.2.2/bin/gatling.sh -ro "/root/results/${i::-7}" && rm -rf "/root/results/${i::-7}/simulation.log"; done
 # plt.plot([1,2,3,4])
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
@@ -247,7 +248,8 @@ def test_32_31():
 
 def test_heap_pause_time():
     #Heap size & pause time
-    for maxPause in [50, 100, 200, 400, 500, 600]:
+    #for maxPause in [50, 100, 200, 300, 400, 500, 600]:
+    for maxPause in [300]:
         for i in range(8, 62, 4):
             test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
             test1.test()
