@@ -115,6 +115,7 @@
 #-XX:+CMSParallelRemarkEnabled
 #-XX:SurvivorRatio=8
 #-XX:MaxTenuringThreshold=1
+#${maxTenuringThreshold}
 #-XX:CMSInitiatingOccupancyFraction=75
 #-XX:+UseCMSInitiatingOccupancyOnly
 #-XX:CMSWaitDuration=10000

@@ -67,7 +67,7 @@ class Test:
         self.params["g1NewSizePercent"] = str(percent)
 
     def setRegionSize(self, regionSize):
-        self.params["g1RegionSize"] = regionSize
+        self.params["g1RegionSize"] = "-XX:G1HeapRegionSize="+regionSize
 
     def setXmn(self, xmn):
         self.params["xmn"] = "-Xmn"+xmn
@@ -108,6 +108,10 @@ class Test:
 
     def useCompressedOops(self):
         self.params["UseCompressedOops"] = "-XX:-UseCompressedOops"
+
+    def setMaxTenuring(self, threshold):
+        self.params["maxTenuringThreshold"] = "-XX:MaxTenuringThreshold="+str(threshold)
+
 
     def loadConfigurationFile(self):
         with open('./jvm.options.template') as infile, open('./jvm.options', 'w') as outfile:
@@ -226,13 +230,13 @@ class Test:
 #32GB vs 31GB
 def test_32_31():
     maxPause = 300
-    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-rs-16", "32G", "32G", G1MaxGCPauseMilli=maxPause)
-    test1.setRegionSize("16m")
-    test1.useCompressedOops()
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-rs-8", "32G", "32G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("8m")
     test1.test()
     time.sleep(2)
-    test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-32", "31G", "31G", G1MaxGCPauseMilli=maxPause)
-    test1.setRegionSize("32m")
+    test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-16", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.useCompressedOops()
     test1.test()
     time.sleep(2)
     for i in range(31, 33):
@@ -248,15 +252,42 @@ def test_32_31():
 
 def test_heap_pause_time():
     #Heap size & pause time
-    #for maxPause in [50, 100, 200, 300, 400, 500, 600]:
-    for maxPause in [300]:
+    for maxPause in [50, 100, 200, 300, 400, 500, 600]:
         for i in range(8, 62, 4):
             test1 = Test("test-heap-size-"+str(i)+"GB-"+str(maxPause)+"ms", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
             test1.test()
             time.sleep(2)
 
-#test_32_31()
-test_heap_pause_time()
+def test_parallel_gc_thread():
+    maxPause = 300
+    for thread in [4, 8, 12, 16, 20, 24]:
+        test1 = Test("test-par-thread-"+str(thread)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+        test1.setParallelGCThreads(thread)
+        test1.test()
+        time.sleep(2)
+
+def test_ihop():
+    maxPause = 300
+    for ihop in [40,60,70,80]:
+        test1 = Test("test-ihop-"+str(ihop)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+        test1.setInitiatingHeapOccupancyPercent(ihop)
+        test1.test()
+        time.sleep(2)
+
+def test_max_tenuring():
+    maxPause = 300
+    for threshold in [0,1,2,3,4]:
+        test1 = Test("test-tenuring-"+str(threshold)+"-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+        test1.setMaxTenuring(threshold)
+        test1.test()
+        time.sleep(2)
+
+
+#test_heap_pause_time()
+test_32_31()
+#test_parallel_gc_thread()
+#test_max_tenuring()
+
 
 # test1 = Test("test-heap-size-32GB", "32G", "32G")
 # test1.test()
