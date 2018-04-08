@@ -243,8 +243,14 @@ def test_32_31():
         test1 = Test("test-32-"+str(i)+"GB-"+str(maxPause)+"ms-rs-default", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
         test1.test()
         time.sleep(2)
-    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-byte-alignment-16", "32G", "32G", G1MaxGCPauseMilli=maxPause)
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-byte-alignment-16-rs-default", "32G", "32G", G1MaxGCPauseMilli=maxPause)
     test1.setObjectAlignment(16)
+    test1.useCompressedOops()
+    test1.test()
+    time.sleep(2)
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-byte-alignment-16-rs-8", "32G", "32G", G1MaxGCPauseMilli=maxPause)
+    test1.setObjectAlignment(16)
+    test1.setRegionSize("8m")
     test1.useCompressedOops()
     test1.test()
     time.sleep(2)
@@ -284,9 +290,10 @@ def test_max_tenuring():
 
 
 #test_heap_pause_time()
-test_32_31()
+#test_32_31()
 #test_parallel_gc_thread()
-#test_max_tenuring()
+#test_ihop
+test_max_tenuring()
 
 
 # test1 = Test("test-heap-size-32GB", "32G", "32G")
