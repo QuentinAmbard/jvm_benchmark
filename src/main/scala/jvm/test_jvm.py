@@ -94,7 +94,7 @@ class Test:
     def setG1MaxGCPauseMilli(self, milli):
         self.params["g1MaxGCPauseMillis"] = "-XX:MaxGCPauseMillis="+str(milli)
 
-    def setInitiatingHeapOccupancyPercent(self, milli):
+    def setInitiatingHeapOccupancyPercent(self, percent):
         self.params["g1InitiatingHeapOccupancyPercent"] = "-XX:InitiatingHeapOccupancyPercent="+str(percent)
 
     def setParallelGCThreads(self, threads):
