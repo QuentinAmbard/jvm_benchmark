@@ -158,6 +158,11 @@ class Test:
             session.execute("truncate table jvm.comment")
             session.execute("truncate table jvm.message")
             print("Tables truncated, disabling compaction...")
+            command = self.sshCommand("nodetool disableautocompaction")
+            print (command)
+            disable_compaction_command = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            disable_compaction_command.wait()
+            print("compaction disabled, DSE is ready")
         except:
             time.sleep(1)
             print("trying to connect to"+options.dseHost)
@@ -165,11 +170,6 @@ class Test:
                 print("ERROR, DSE hasn't restarted, something is wrong...")
             else:
                 self.resetDSE(count+1)
-        command = self.sshCommand("nodetool disableautocompaction")
-        print (command)
-        disable_compaction_command = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        disable_compaction_command.wait()
-        print("compaction disabled, DSE is ready")
 
 
     def startGatlingTest(self):
