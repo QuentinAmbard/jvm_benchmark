@@ -159,6 +159,7 @@ class Test:
             session.execute("truncate table jvm.message")
             print("Tables truncated, disabling compaction...")
             command = self.sshCommand("nodetool disableautocompaction")
+            print (command)
             disable_compaction_command = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             disable_compaction_command.wait()
             print("compaction disabled, DSE is ready")
