@@ -1,15 +1,14 @@
 package jvm
 
 import java.nio.ByteBuffer
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDateTime, ZoneOffset}
 import java.util
-import java.util.{Date, UUID}
+import java.util.Date
 
 import com.datastax.driver.core._
+import com.datastax.driver.dse.DseCluster
+import com.datastax.gatling.plugin.CqlPredef.{cql, _}
 import io.gatling.core.Predef.{constantUsersPerSec, feed, scenario, _}
 import io.gatling.core.scenario.Simulation
-import io.github.gatling.cql.Predef.{cql, _}
 
 import scala.concurrent.duration.DurationInt
 import scala.util.Random
@@ -22,6 +21,7 @@ class TestJVM extends Simulation {
       case c => c
     }
   }
+
   val contactPoint = getProperty("contactPoint", "localhost")
 
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
@@ -33,9 +33,10 @@ class TestJVM extends Simulation {
   Random.setSeed(1321254L)
   val random = new Random()
   val subset: Array[Char] = "0123456789abcdefghijklmnopqrstuvwxyzAZERTYUIOPMLKJHGFDSQWXCVBN".toCharArray
+
   def getRandomStr(length: Int): String = {
     val buf = new Array[Char](length)
-    for (i <- 0 to buf.length -1) {
+    for (i <- 0 to buf.length - 1) {
       val index = random.nextInt(subset.length)
       buf(i) = subset(index)
     }
@@ -48,21 +49,22 @@ class TestJVM extends Simulation {
   val dates = (0 to 1000000).map(i => new Date(i)).toArray
 
 
-  val cluster = Cluster.builder()
+  val poolingOptions = new PoolingOptions()
+    .setConnectionsPerHost(HostDistance.LOCAL, 20, 30)
+    .setMaxRequestsPerConnection(HostDistance.LOCAL, 5000)
+  val cluster = DseCluster.builder()
     .addContactPoints(contactPoint)
-    .withPoolingOptions(new PoolingOptions()
-      .setConnectionsPerHost(HostDistance.LOCAL, 20, 30)
-      .setMaxRequestsPerConnection(HostDistance.LOCAL, 5000))
+    .withPoolingOptions(poolingOptions)
     .build()
 
   val session = cluster.connect() //Your C* session
 
   val firstnames = (0 to 100).map(_ => getRandomStr(30)).toArray
   val lastnames = (0 to 100).map(_ => getRandomStr(50)).toArray
-  val cities = (0 to 100).map(_ => getRandomStr(10+random.nextInt(10))).toArray
-  val addresses = (0 to 100).map(_ => getRandomStr(20+random.nextInt(50))).toArray
+  val cities = (0 to 100).map(_ => getRandomStr(10 + random.nextInt(10))).toArray
+  val addresses = (0 to 100).map(_ => getRandomStr(20 + random.nextInt(50))).toArray
   val zipcodes = (0 to 100).map(_ => getRandomStr(7)).toArray
-  val contents = (0 to 10).map(_ => getRandomStr(2000+random.nextInt(500))).toArray
+  val contents = (0 to 10).map(_ => getRandomStr(2000 + random.nextInt(500))).toArray
   val smallContents = (0 to 10).map(i => {
     val b = new Array[Byte](random.nextInt(100) + 500)
     random.nextBytes(b)
@@ -81,16 +83,16 @@ class TestJVM extends Simulation {
       p += 1
       //if(p>maxEntitiesPerTable) p = 0
       Map(
-        "id" -> p ,
+        "id" -> p,
         "firstname" -> s"$p${getRandom(firstnames)}",
-        "lastname"  -> s"$p${getRandom(lastnames)}",
+        "lastname" -> s"$p${getRandom(lastnames)}",
         "age" -> p,
         "city" -> s"$p${getRandom(cities)}",
         "address" -> s"$p${getRandom(addresses)}",
         "zipcode" -> s"$p${getRandom(zipcodes)}",
         "description" -> s"$p${getRandom(contents)}"
       )
-    })).exec(cql("insert person").execute(insertPersonQ)
+    })).exec(cql("insert person").executePrepared(insertPersonQ)
       .withParams("${id}", "${firstname}", "${lastname}", "${age}", "${city}", "${address}", "${zipcode}", "${description}")
     )
   }
@@ -102,14 +104,14 @@ class TestJVM extends Simulation {
       m += 1
       //if(m>maxEntitiesPerTable) m = 0
       Map(
-        "person_id" -> p/10,
-        "id" -> m ,
-        "header"  -> getRandom(lastnames),
+        "person_id" -> p / 10,
+        "id" -> m,
+        "header" -> getRandom(lastnames),
         "content" -> getRandom(smallContents),
         "content2" -> getRandom(smallContents),
         "score" -> random.nextFloat()
       )
-    })).exec(cql("insert message").execute(insertMessageQ)
+    })).exec(cql("insert message").executePrepared(insertMessageQ)
       .withParams("${person_id}", "${id}", "${header}", "${content}", "${content2}", "${score}")
     )
   }
@@ -125,79 +127,71 @@ class TestJVM extends Simulation {
 
   var c = 0
   val insertCommentQ = session.prepare("""INSERT INTO jvm.comment (id, time, content, like, categories) VALUES (?,?,?,?,?)""")
-  val insertComment = scenario("insert comment").repeat(1) {
-    feed(Iterator.continually({
-      c += 1
-      //if(c>maxEntitiesPerTable) c = 0
-      Map(
-        "id" -> c/10 ,
-        "time" -> getRandom(dates),
-        "content"  -> getRandom(contents),
-        "like" -> random.nextInt(),
-        "categories" -> getRandom(categories)
-      )
-    })).exec(cql("insert comment").execute(insertCommentQ)
-      .withParams("${id}", "${time}", "${content}", "${like}", "${categories}")
+  val insertComment = scenario("insert comment").feed(Iterator.continually({
+    c += 1
+    //if(c>maxEntitiesPerTable) c = 0
+    Map(
+      "id" -> c / 10,
+      "time" -> getRandom(dates),
+      "content" -> getRandom(contents),
+      "like" -> random.nextInt(),
+      "categories" -> getRandom(categories)
     )
-  }
+  })).exec(cql("insert comment").executePrepared(insertCommentQ)
+    .withParams("${id}", "${time}", "${content}", "${like}", "${categories}")
+  )
 
   var rp = 0
   val readPersonQ = session.prepare("""SELECT * from jvm.person where id=? """)
-  val readPerson = scenario("read person").repeat(1) {
-    feed(Iterator.continually({
-//      rp+=1
-//      if(rp>p){
-//        rp = 0
-//      }
-      Map("id" -> random.nextInt(p))
-    })).exec(cql("read person").execute(readPersonQ)
-      .withParams("${id}")
-    )
-  }
+  val readPerson = scenario("read person").feed(Iterator.continually({
+    //      rp+=1
+    //      if(rp>p){
+    //        rp = 0
+    //      }
+    Map("id" -> random.nextInt(p))
+  })).exec(cql("read person").executePrepared(readPersonQ)
+    .withParams("${id}")
+  )
 
   var rm = 0
   val readMessageQ = session.prepare("""SELECT * from jvm.message where person_id=? """)
-  val readMessage = scenario("read message").repeat(1) {
-    feed(Iterator.continually({
-//      rm+=1
-//      if(rm>m){
-//        rm = 0
-//      }
-      Map("person_id" -> random.nextInt(p))
-    })).exec(cql("read message").execute(readMessageQ)
-      .withParams("${person_id}")
-      .consistencyLevel(ConsistencyLevel.ONE)
-    )
-  }
+  val readMessage = scenario("read message").feed(Iterator.continually({
+    //      rm+=1
+    //      if(rm>m){
+    //        rm = 0
+    //      }
+    Map("person_id" -> random.nextInt(p))
+  })).exec(cql("read message").executePrepared(readMessageQ)
+    .withParams("${person_id}")
+    .consistencyLevel(ConsistencyLevel.ONE)
+  )
 
 
   var rc = 0
   val readCommentQ = session.prepare("""SELECT * from jvm.comment where id=? """)
-  val readComment = scenario("read comment").repeat(1) {
-    feed(Iterator.continually({
-//      rc+=1
-//      if(rc>c){
-//        rc = 0
-//      }
-      Map("id" -> random.nextInt(c))
-    })).exec(cql("read comment").execute(readCommentQ)
-      .withParams("${id}")
-      .consistencyLevel(ConsistencyLevel.ONE)
-    )
-  }
+  val readComment = scenario("read comment").feed(Iterator.continually({
+    //      rc+=1
+    //      if(rc>c){
+    //        rc = 0
+    //      }
+    Map("id" -> random.nextInt(c))
+  })).exec(cql("read comment").executePrepared(readCommentQ)
+    .withParams("${id}")
+    .consistencyLevel(ConsistencyLevel.ONE)
+  )
 
 
   setUp(
     insertPerson.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds), endRampup(writePerSecPerQuery))
-    ,insertMessage.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds), endRampup(writePerSecPerQuery))
-    ,insertComment.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds), endRampup(writePerSecPerQuery))
+    , insertMessage.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds), endRampup(writePerSecPerQuery))
+    , insertComment.inject(smalRampup(), normalRampup(writePerSecPerQuery), constantUsersPerSec(writePerSecPerQuery) during (testDurationSec seconds), endRampup(writePerSecPerQuery))
 
-    ,readPerson.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds), endRampup(readPerSecPerQuery))
-    ,readMessage.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds), endRampup(readPerSecPerQuery))
-    ,readComment.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds), endRampup(readPerSecPerQuery))
+    , readPerson.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds), endRampup(readPerSecPerQuery))
+    , readMessage.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds), endRampup(readPerSecPerQuery))
+    , readComment.inject(smalRampup(), normalRampup(readPerSecPerQuery), constantUsersPerSec(readPerSecPerQuery) during (testDurationSec seconds), endRampup(readPerSecPerQuery))
   ).protocols(cqlConfig)
 
-//  session.execute("delete from jvm.test where name='gatling'")
+  //  session.execute("delete from jvm.test where name='gatling'")
 
   private def normalRampup(target: Int) = {
     rampUsersPerSec(500) to target during (rampupDurationSec seconds)

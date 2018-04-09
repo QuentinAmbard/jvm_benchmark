@@ -6,8 +6,8 @@ version := "0.1"
 
 scalaVersion := "2.12.4"
 
-libraryDependencies += "io.gatling" % "gatling-core" % "2.2.3"
-libraryDependencies += "io.gatling" % "gatling-http" % "2.2.3"
+libraryDependencies += "io.gatling" % "gatling-core" % "2.3.1"
+libraryDependencies += "io.gatling" % "gatling-http" % "2.3.1"
 libraryDependencies += "com.google.guava" % "guava" % "24.1-jre"
 
 
