@@ -50,8 +50,8 @@ class TestJVM extends Simulation {
 
 
   val poolingOptions = new PoolingOptions()
-    .setConnectionsPerHost(HostDistance.LOCAL, 20, 30)
-    .setMaxRequestsPerConnection(HostDistance.LOCAL, 5000)
+    .setConnectionsPerHost(HostDistance.LOCAL, 10, 30)
+    .setMaxRequestsPerConnection(HostDistance.LOCAL, 10000)
   val cluster = DseCluster.builder()
     .addContactPoints(contactPoint)
     .withPoolingOptions(poolingOptions)
