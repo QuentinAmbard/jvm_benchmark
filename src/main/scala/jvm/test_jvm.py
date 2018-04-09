@@ -278,7 +278,7 @@ def test_parallel_gc_thread():
 
 def test_ihop(maxTenuring):
     maxPause = 300
-    for ihop in [60,70,80]:
+    for ihop in [60,70,80,45]:
         test1 = Test("test-ihop-"+str(ihop)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
         test1.setInitiatingHeapOccupancyPercent(ihop)
         test1.setMaxTenuring(maxTenuring)
@@ -296,9 +296,9 @@ def test_max_tenuring():
 
 #test_heap_pause_time()
 #test_parallel_gc_thread()
-test_32_31()
+#test_32_31()
 #test_max_tenuring()
-#test_ihop(0)
+test_ihop(0)
 #test_ihop(1)
 
 
