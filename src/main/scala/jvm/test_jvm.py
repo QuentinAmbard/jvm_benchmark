@@ -299,7 +299,7 @@ def test_max_tenuring():
 #test_parallel_gc_thread()
 #test_32_31()
 #test_max_tenuring()
-test_ihop(0)
+test_ihop(1)
 #test_ihop(1)
 
 
