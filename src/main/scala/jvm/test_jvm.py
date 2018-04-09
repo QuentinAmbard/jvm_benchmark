@@ -296,9 +296,9 @@ def test_max_tenuring():
 
 
 #test_heap_pause_time()
-#test_parallel_gc_thread()
+test_parallel_gc_thread()
 test_32_31()
-#test_max_tenuring()
+test_max_tenuring()
 #test_ihop(1)
 #test_ihop(1)
 
