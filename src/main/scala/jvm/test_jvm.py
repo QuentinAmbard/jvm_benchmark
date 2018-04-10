@@ -286,7 +286,7 @@ def test_heap_pause_time():
 
 def test_parallel_gc_thread():
     maxPause = 300
-    for thread in [4, 8, 12, 16, 20, 24]:
+    for thread in [8, 16, 32, 40]:
         test1 = Test("test-par-thread-"+str(thread)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
         test1.setParallelGCThreads(thread)
         test1.test()
