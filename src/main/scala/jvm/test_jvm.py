@@ -112,6 +112,9 @@ class Test:
     def setMaxTenuring(self, threshold):
         self.params["maxTenuringThreshold"] = "-XX:MaxTenuringThreshold="+str(threshold)
 
+    def setParallelRefProcEnabled(self):
+        self.params["ParallelRefProcEnabled"] = "-XX:+ParallelRefProcEnabled"
+
 
     def loadConfigurationFile(self):
         with open('./jvm.options.template') as infile, open('./jvm.options', 'w') as outfile:
@@ -294,11 +297,19 @@ def test_max_tenuring():
         test1.test()
         time.sleep(2)
 
+def test_parallelRefProcEnabled():
+    maxPause = 300
+    test1 = Test("parallel_ref-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setParallelRefProcEnabled()
+    test1.test()
+    time.sleep(2)
+
 
 #test_heap_pause_time()
-test_parallel_gc_thread()
-test_32_31()
-test_max_tenuring()
+test_parallelRefProcEnabled()
+#test_32_31()
+#test_parallel_gc_thread()
+#test_max_tenuring()
 #test_ihop(1)
 #test_ihop(1)
 

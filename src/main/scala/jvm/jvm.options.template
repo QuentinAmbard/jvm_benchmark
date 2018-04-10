@@ -161,6 +161,9 @@
 #-XX:-UseCompressedOops
 #${UseCompressedOops}
 
+#-XX:+ParallelRefProcEnabled
+#${ParallelRefProcEnabled}
+
 #-XX:+UnlockDiagnosticVMOptions
 #-XX:+PrintCompressedOopsMode
 
