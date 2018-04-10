@@ -306,11 +306,11 @@ def test_parallelRefProcEnabled():
 
 
 #test_heap_pause_time()
+test_32_31()
+test_parallel_gc_thread()
+test_max_tenuring()
+test_ihop(0)
 test_parallelRefProcEnabled()
-#test_32_31()
-#test_parallel_gc_thread()
-#test_max_tenuring()
-#test_ihop(1)
 #test_ihop(1)
 
 

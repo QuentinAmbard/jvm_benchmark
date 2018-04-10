@@ -16,11 +16,12 @@ public class Test {
     public static void main(String[] args) throws IOException {
         String logFile = args.length>0 ? args[0] : "/home/quentin/Downloads/jvm_bench/test-32-31GB-300ms-rs-32-1522861280706/simulation.log";
         String outputFile = args.length>1 ? args[1] : "/home/quentin/Downloads/jvm_bench/test-32-31GB-300ms-rs-32-1522861280706/result.csv";
+        Integer timeToMeasureInSec = (args.length>2 ? Integer.valueOf(args[2]) : 1200)*1000;
         System.out.println("logFile="+logFile);
         System.out.println("outputFile="+outputFile);
         String testName = logFile.substring(0,logFile.lastIndexOf("/"));
         testName = logFile.substring(testName.lastIndexOf("/")+1, testName.length());
-
+        Long startTime = null;
         int control = 0;
         long t1 = System.currentTimeMillis();
 //        List<Long> timeOK = new ArrayList<>(48 * 1400);
@@ -42,6 +43,13 @@ public class Test {
                         String cell = cols.next();
                         if(i==5) start = Long.valueOf(cell);
                         else if(i==6) end = Long.valueOf(cell);
+                    }
+                    if(startTime == null){
+                        startTime = start;
+                    }
+                    if(start > startTime + timeToMeasureInSec){
+                        System.out.println("stop at"+start);
+                        break;
                     }
                     timeALL.add(end-start);
                 }
