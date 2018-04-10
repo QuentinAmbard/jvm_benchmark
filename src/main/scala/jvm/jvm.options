@@ -53,7 +53,7 @@
 ### Debug options
 
 # uncomment to enable flight recorder
--XX:+UnlockCommercialFeatures
+#-XX:+UnlockCommercialFeatures
 #-XX:+FlightRecorder
 
 # uncomment to have Cassandra JVM listen for remote debuggers/profilers on port 1414

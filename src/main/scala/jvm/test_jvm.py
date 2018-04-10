@@ -115,8 +115,8 @@ class Test:
     def setParallelRefProcEnabled(self):
         self.params["ParallelRefProcEnabled"] = "-XX:+ParallelRefProcEnabled"
 
-    def setNewSize(self):
-        self.params["NewSize"] = "-XX:NewSize"
+    def setNewSize(self, size):
+        self.params["NewSize"] = "-XX:NewSize="+size
 
 
 
@@ -322,7 +322,7 @@ def test_parallelRefProcEnabled():
 
 
 #test_heap_pause_time()
-test_parallelRefProcEnabled()
+#test_parallelRefProcEnabled()
 test_new_size()
 test_parallel_gc_thread()
 test_32_31()
