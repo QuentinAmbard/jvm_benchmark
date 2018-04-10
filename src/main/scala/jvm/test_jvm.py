@@ -281,6 +281,9 @@ def test_parallel_gc_thread():
         test1.setParallelGCThreads(thread)
         test1.test()
         time.sleep(2)
+        test1 = Test("test-par-thread-disabled-"+str(thread)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+        test1.test()
+        time.sleep(2)
 
 def test_ihop(maxTenuring):
     maxPause = 300

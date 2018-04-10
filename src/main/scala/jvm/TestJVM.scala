@@ -66,11 +66,19 @@ class TestJVM extends Simulation {
   val cities = (0 to 100).map(_ => getRandomStr(10 + random.nextInt(10))).toArray
   val addresses = (0 to 100).map(_ => getRandomStr(20 + random.nextInt(50))).toArray
   val zipcodes = (0 to 100).map(_ => getRandomStr(7)).toArray
-  val contents = (0 to 10).map(_ => getRandomStr(2000 + random.nextInt(500))).toArray
+  val contents = (0 to 10).map(_ => getRandomStr(2000 + random.nextInt(500))).flatMap(str => {
+    (0 to 1000).map(i => str + "i")
+  }).toArray
   val smallContents = (0 to 10).map(i => {
     val b = new Array[Byte](random.nextInt(100) + 500)
     random.nextBytes(b)
-    ByteBuffer.wrap(b)
+    b
+  }).flatMap(bytes => {
+    (0 to 1000).map(i => {
+      val c = Array[Byte]()
+      Array.copy(bytes, 0, c, 0, bytes.size)
+      ByteBuffer.wrap(c)
+    })
   }).toArray
 
 
