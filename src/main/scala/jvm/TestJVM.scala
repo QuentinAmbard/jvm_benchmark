@@ -30,6 +30,8 @@ class TestJVM extends Simulation {
   val rampupDurationSec = getProperty("rampupDurationSec", "120").toInt
   val maxEntitiesPerTable = getProperty("maxEntitiesPerTable", "480000").toInt
 
+  println(s"Starting test at $writePerSecPerQuery / $readPerSecPerQuery during $testDurationSec - rampup=$rampupDurationSec")
+
   Random.setSeed(1321254L)
   val random = new Random()
   val subset: Array[Char] = "0123456789abcdefghijklmnopqrstuvwxyzAZERTYUIOPMLKJHGFDSQWXCVBN".toCharArray
