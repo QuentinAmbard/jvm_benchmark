@@ -115,6 +115,10 @@ class Test:
     def setParallelRefProcEnabled(self):
         self.params["ParallelRefProcEnabled"] = "-XX:+ParallelRefProcEnabled"
 
+    def setNewSize(self):
+        self.params["NewSize"] = "-XX:NewSize"
+
+
 
     def loadConfigurationFile(self):
         with open('./jvm.options.template') as infile, open('./jvm.options', 'w') as outfile:
@@ -265,6 +269,12 @@ def test_32_31():
     test1.test()
     time.sleep(2)
 
+def test_new_size():
+    maxPause = 300
+    test1 = Test("test-new-size-4GB-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setNewSize("4G")
+    test1.test()
+    time.sleep(2)
 
 def test_heap_pause_time():
     #Heap size & pause time
@@ -279,9 +289,6 @@ def test_parallel_gc_thread():
     for thread in [4, 8, 12, 16, 20, 24]:
         test1 = Test("test-par-thread-"+str(thread)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
         test1.setParallelGCThreads(thread)
-        test1.test()
-        time.sleep(2)
-        test1 = Test("test-par-thread-disabled-"+str(thread)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
         test1.test()
         time.sleep(2)
 
@@ -304,18 +311,23 @@ def test_max_tenuring():
 
 def test_parallelRefProcEnabled():
     maxPause = 300
-    test1 = Test("parallel_ref-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1 = Test("test-parallel_ref-disabled-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.test()
+    time.sleep(2)
+    test1 = Test("test-parallel_ref-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
     test1.setParallelRefProcEnabled()
     test1.test()
     time.sleep(2)
 
 
+
 #test_heap_pause_time()
-test_32_31()
+test_parallelRefProcEnabled()
+test_new_size()
 test_parallel_gc_thread()
+test_32_31()
 test_max_tenuring()
 test_ihop(0)
-test_parallelRefProcEnabled()
 #test_ihop(1)
 
 

@@ -164,6 +164,9 @@
 #-XX:+ParallelRefProcEnabled
 #${ParallelRefProcEnabled}
 
+#-XX:NewSize
+#${NewSize}
+
 #-XX:+UnlockDiagnosticVMOptions
 #-XX:+PrintCompressedOopsMode
 

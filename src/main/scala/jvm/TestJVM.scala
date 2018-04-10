@@ -75,8 +75,8 @@ class TestJVM extends Simulation {
     b
   }).flatMap(bytes => {
     (0 to 100).map(i => {
-      val c = Array[Byte]()
-      Array.copy(bytes, 0, c, 0, bytes.size)
+      val c = Array.ofDim[Byte](bytes.length)
+      Array.copy(bytes, 0, c, 0, bytes.length)
       ByteBuffer.wrap(c)
     })
   }).toArray
