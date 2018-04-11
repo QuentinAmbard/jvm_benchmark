@@ -158,6 +158,9 @@
 #-XX:ObjectAlignmentInBytes=8
 #${ObjectAlignmentInBytes}
 
+#-XX:G1MixedGCLiveThresholdPercent=65
+#${G1MixedGCLiveThresholdPercent}
+
 #-XX:-UseCompressedOops
 #${UseCompressedOops}
 

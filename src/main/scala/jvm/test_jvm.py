@@ -118,6 +118,8 @@ class Test:
     def setNewSize(self, size):
         self.params["NewSize"] = "-XX:NewSize="+size
 
+    def setMixedGCLiveThresholdPercent(self, value):
+        self.params["G1MixedGCLiveThresholdPercent"] = "-XX:G1MixedGCLiveThresholdPercent="+str(value)
 
 
     def loadConfigurationFile(self):
@@ -319,10 +321,22 @@ def test_parallelRefProcEnabled():
     test1.test()
     time.sleep(2)
 
+def test_mixed_percent():
+    maxPause = 300
+    test1 = Test("test-mixed-percent-45-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setMixedGCLiveThresholdPercent(45)
+    test1.test()
+    time.sleep(2)
+    test1 = Test("test-mixed-percent-55-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setMixedGCLiveThresholdPercent(55)
+    test1.test()
+    time.sleep(2)
 
 
-#test_heap_pause_time()
+
+test_heap_pause_time()
 #test_parallelRefProcEnabled()
+test_mixed_percent()
 test_new_size()
 test_parallel_gc_thread()
 test_32_31()
