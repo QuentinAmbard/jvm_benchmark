@@ -243,6 +243,14 @@ class Test:
 # plt.ylabel('some numbers')
 # plt.savefig('foo.png', dpi=200)
 
+
+def test_pause_time_32():
+    #Heap size & pause time
+    for maxPause in [50, 100, 200, 300, 400, 500, 600]:
+        test1 = Test("test-pause-time-32GB-"+str(maxPause)+"ms", "32G", "32G", G1MaxGCPauseMilli=maxPause)
+        test1.test()
+        time.sleep(2)
+
 #32GB vs 31GB
 def test_32_31():
     maxPause = 300
@@ -333,15 +341,15 @@ def test_mixed_percent():
     time.sleep(2)
 
 
-
-test_heap_pause_time()
-#test_parallelRefProcEnabled()
-test_mixed_percent()
-test_new_size()
-test_parallel_gc_thread()
-test_32_31()
-test_max_tenuring()
-test_ihop(0)
+test_pause_time_32()
+# test_heap_pause_time()
+# #test_parallelRefProcEnabled()
+# test_mixed_percent()
+# test_new_size()
+# test_parallel_gc_thread()
+# test_32_31()
+# test_max_tenuring()
+# test_ihop(0)
 #test_ihop(1)
 
 
