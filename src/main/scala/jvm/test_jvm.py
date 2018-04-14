@@ -367,6 +367,7 @@ def test_base():
 
 # test_mixed_percent()
 # test_string_dedup()
+test_string_dedup()
 test_base()
 test_heap_pause_200()
 
