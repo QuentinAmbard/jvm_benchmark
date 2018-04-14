@@ -359,9 +359,15 @@ def test_string_dedup():
     test1.enableStringDedup()
     test1.test()
 
+def test_base():
+    maxPause = 300
+    test1 = Test("test-base-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.test()
 
-test_mixed_percent()
-test_string_dedup()
+
+# test_mixed_percent()
+# test_string_dedup()
+test_base()
 test_heap_pause_200()
 
 #test_pause_time_32()
