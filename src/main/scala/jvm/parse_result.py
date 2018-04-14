@@ -23,8 +23,8 @@ import math
 
 
 parser = OptionParser()
-parser.add_option("-f", "--folder", default="/home/quentin/Downloads/jvm_bench/results")
-parser.add_option("-s", "--sarFolder", default="/home/quentin/Downloads/jvm_bench/sar")
+parser.add_option("-f", "--folder", default="/home/quentin/Downloads/jvm_result/test/test-heap/sar")
+parser.add_option("-s", "--sarFolder", default="/home/quentin/Downloads/jvm_result/test/test-heap/sar")
 parser.add_option("-o", "--output", default="/home/quentin/Downloads/jvm_bench/results/result.csv")
 
 (options, args) = parser.parse_args()
@@ -53,8 +53,7 @@ def percentile(N, percent, key=lambda x:x):
     d1 = key(N[int(c)]) * (k-f)
     return d0+d1
 
-header =['allocationRate_MBs', 'heapSize_GB', 'maxPauseTarget', 'maxResponseTime', 'meanResponseTime_ms', 'standardDeviation_ms', '95pt', '98pt', '99pt', '99.9pt', '99.99pt',
-       'gcTotalPause', 'gcMeanPause', 'gcMaxPause', 'gc50', 'gc90', 'gc95', 'gc99', 'gc99.9', 'gc99.99']
+header =['allocationRate_MBs', 'heapSize_GB', 'maxPauseTarget','gcTotalPause', 'gcMeanPause', 'gcMaxPause', 'gc50', 'gc90', 'gc95', 'gc99', 'gc99.9', 'gc99.99']
 rows = [header]
 onlyfiles = [f for f in os.listdir(options.folder) if not os.path.isfile(os.path.join(options.folder, f))]
 for f in onlyfiles:
@@ -88,18 +87,22 @@ for f in onlyfiles:
             p99 = percentile(pauses, 0.99)
             p999 = percentile(pauses, 0.999)
             p9999 = percentile(pauses, 0.9999)
+            row = ['900', heap, targetPause, psum, pmean, pmax, p50, p90, p95, p99, p999, p9999]
+            print (row)
+            rows.append(row)
+
     except :
         traceback.print_exc()
 
     ##########################
     #######GATLING STATS######
-    with open(os.path.join(options.folder, f, 'js', 'stats.json')) as json_data:
-        d = json.load(json_data)
-        stats = d['stats']
-        row = ['1500', heap, targetPause, stats['maxResponseTime']['total'], stats['meanResponseTime']['total'], stats['standardDeviation']['total'], stats['percentiles1']['total'], stats['percentiles2']['total'],
-               stats['percentiles3']['total'], stats['percentiles4']['total'], psum, pmean, pmax, p50, p90, p95, p99, p999, p9999]
-        print (row)
-        rows.append(row)
+    # with open(os.path.join(options.folder, f, 'js', 'stats.json')) as json_data:
+    #     d = json.load(json_data)
+    #     stats = d['stats']
+    #     row = ['1500', heap, targetPause, stats['maxResponseTime']['total'], stats['meanResponseTime']['total'], stats['standardDeviation']['total'], stats['percentiles1']['total'], stats['percentiles2']['total'],
+    #            stats['percentiles3']['total'], stats['percentiles4']['total'], psum, pmean, pmax, p50, p90, p95, p99, p999, p9999]
+    #     print (row)
+    #     rows.append(row)
         #result_writer.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
 
 for row in rows:

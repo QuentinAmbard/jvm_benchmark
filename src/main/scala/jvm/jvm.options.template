@@ -164,6 +164,9 @@
 #-XX:-UseCompressedOops
 #${UseCompressedOops}
 
+#-XX:+UnlockExperimentalVMOptions
+#${UnlockExperimentalVMOptions}
+
 #-XX:+ParallelRefProcEnabled
 #${ParallelRefProcEnabled}
 
@@ -182,6 +185,8 @@
 #-XX:G1HeapWastePercent=10
 #${g1HeapWastePercent}
 
+#-XX:+UseStringDeduplication
+#${UseStringDeduplication}
 
 # By default, ConcGCThreads is 1/4 of ParallelGCThreads.
 # Setting both to the same value can reduce STW durations.

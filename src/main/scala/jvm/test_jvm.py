@@ -120,6 +120,11 @@ class Test:
 
     def setMixedGCLiveThresholdPercent(self, value):
         self.params["G1MixedGCLiveThresholdPercent"] = "-XX:G1MixedGCLiveThresholdPercent="+str(value)
+        self.params["UnlockExperimentalVMOptions"] = "-XX:+UnlockExperimentalVMOptions"
+
+    def enableStringDedup(self):
+        self.params["UseStringDeduplication"] = "-XX:+UseStringDeduplication"
+
 
 
     def loadConfigurationFile(self):
@@ -251,6 +256,14 @@ def test_pause_time_32():
         test1.test()
         time.sleep(2)
 
+def test_heap_pause_200():
+    maxPause = 200
+    #Heap size & pause time
+    for i in range(8, 62, 4):
+        test1 = Test("test-heap-size-"+str(maxPause)+"ms-"+str(i)+"GB", str(i)+"G", str(i)+"G", G1MaxGCPauseMilli=maxPause)
+        test1.test()
+        time.sleep(2)
+
 #32GB vs 31GB
 def test_32_31():
     maxPause = 300
@@ -340,11 +353,20 @@ def test_mixed_percent():
     test1.test()
     time.sleep(2)
 
+def test_string_dedup():
+    maxPause = 300
+    test1 = Test("test-string-dedup-45-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.enableStringDedup()
+    test1.test()
 
-test_pause_time_32()
+
+test_mixed_percent()
+test_heap_pause_200()
+test_string_dedup()
+
+#test_pause_time_32()
 # test_heap_pause_time()
 # #test_parallelRefProcEnabled()
-# test_mixed_percent()
 # test_new_size()
 # test_parallel_gc_thread()
 # test_32_31()
