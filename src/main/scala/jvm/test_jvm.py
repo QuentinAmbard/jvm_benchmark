@@ -366,10 +366,17 @@ def test_base():
     test1.test()
 
 
+def test_base_zing():
+    maxPause = 300
+    test1 = Test("test-base-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.useZing()
+    test1.test()
+
+
 # test_mixed_percent()
 # test_string_dedup()
 #test_string_dedup()
-test_base()
+test_base_zing()
 #test_heap_pause_200()
 
 #test_pause_time_32()
