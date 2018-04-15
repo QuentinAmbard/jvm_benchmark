@@ -369,8 +369,25 @@ def test_base():
 def test_base_zing():
     maxPause = 300
     test1 = Test("test-base-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
-    #test1.useZing()
+    test1.useZing()
     test1.test()
+
+def test_zing_heap():
+    for i in range(8, 62, 4):
+        test1 = Test("test-zing-heap-size-"+str(i)+"GB", str(i)+"G", str(i)+"G")
+        test1.test()
+        time.sleep(2)
+
+def test_zero_based_compression():
+    maxPause=300
+    test1 = Test("test-zero_based_compression-heap-30GB", "30G", "30G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.test()
+    time.sleep(2)
+    test1 = Test("test-zero_based_compression-heap-31GB", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.test()
+    time.sleep(2)
 
 
 def test_final():
@@ -389,7 +406,8 @@ def test_final():
 # test_mixed_percent()
 # test_string_dedup()
 #test_string_dedup()
-test_final()
+test_zero_based_compression()
+test_zing_heap()
 #test_heap_pause_200()
 
 #test_pause_time_32()
