@@ -389,7 +389,7 @@ def test_final():
 # test_mixed_percent()
 # test_string_dedup()
 #test_string_dedup()
-test_base_zing()
+test_final()
 #test_heap_pause_200()
 
 #test_pause_time_32()
