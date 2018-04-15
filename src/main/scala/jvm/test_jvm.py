@@ -369,7 +369,7 @@ def test_base():
 def test_base_zing():
     maxPause = 300
     test1 = Test("test-base-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
-    #test1.useZing()
+    test1.useZing()
     test1.test()
 
 
