@@ -64,7 +64,7 @@ class Test:
     def setHeapWastePercent(self, percent):
         self.params["g1HeapWastePercent"] = str(percent)
 
-    def setRegionSizePercent(self, percent):
+    def setNewSizePercent(self, percent):
         self.params["g1NewSizePercent"] = str(percent)
 
     def setRegionSize(self, regionSize):
@@ -369,6 +369,19 @@ def test_base():
 def test_base_zing():
     maxPause = 300
     test1 = Test("test-base-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    #test1.useZing()
+    test1.test()
+
+
+def test_final():
+    maxPause = 300
+    test1 = Test("test-final-31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.setNewSize("2500m")
+    test1.setMaxTenuring(0)
+    test1.setParallelGCThreads(32)
+    test1.setParallelRefProcEnabled()
+
     #test1.useZing()
     test1.test()
 
