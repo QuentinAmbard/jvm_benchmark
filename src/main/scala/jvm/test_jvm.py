@@ -58,7 +58,8 @@ class Test:
         self.clean_memory_command = "sync && echo 3 > /proc/sys/vm/drop_caches && "
 
     def useZing(self):
-        self.java = "alternatives --set java "+options.zingJdkPath
+        #self.java = "alternatives --set java "+options.zingJdkPath
+        self.java = "alternatives --set java /opt/zing/zing-jdk1.8.0-18.03.0.0-6-x86_64/bin/java"
 
     def setHeapWastePercent(self, percent):
         self.params["g1HeapWastePercent"] = str(percent)
@@ -367,9 +368,9 @@ def test_base():
 
 # test_mixed_percent()
 # test_string_dedup()
-test_string_dedup()
+#test_string_dedup()
 test_base()
-test_heap_pause_200()
+#test_heap_pause_200()
 
 #test_pause_time_32()
 # test_heap_pause_time()
