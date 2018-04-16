@@ -373,11 +373,15 @@ def test_base_zing():
     test1.test()
 
 def test_zing_heap():
-    for i in range(8, 62, 4):
-        test1 = Test("test-zing-heap-size-"+str(i)+"GB", str(i)+"G", str(i)+"G")
-        test1.useZing()
-        test1.test()
-        time.sleep(2)
+    i=31
+    test1 = Test("test-zing-heap-size-"+str(i)+"GB", str(i)+"G", str(i)+"G")
+    test1.useZing()
+    test1.test()
+    # for i in range(8, 62, 8):
+    #     test1 = Test("test-zing-heap-size-"+str(i)+"GB", str(i)+"G", str(i)+"G")
+    #     test1.useZing()
+    #     test1.test()
+    #     time.sleep(2)
 
 def test_zero_based_compression():
     maxPause=300
@@ -408,7 +412,7 @@ def test_final():
 # test_string_dedup()
 #test_string_dedup()
 test_zing_heap()
-test_zero_based_compression()
+#test_zero_based_compression()
 #test_heap_pause_200()
 
 #test_pause_time_32()
