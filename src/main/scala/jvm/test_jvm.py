@@ -375,6 +375,7 @@ def test_base_zing():
 def test_zing_heap():
     for i in range(8, 62, 4):
         test1 = Test("test-zing-heap-size-"+str(i)+"GB", str(i)+"G", str(i)+"G")
+        test1.useZing()
         test1.test()
         time.sleep(2)
 
@@ -406,8 +407,8 @@ def test_final():
 # test_mixed_percent()
 # test_string_dedup()
 #test_string_dedup()
-test_zero_based_compression()
 test_zing_heap()
+test_zero_based_compression()
 #test_heap_pause_200()
 
 #test_pause_time_32()

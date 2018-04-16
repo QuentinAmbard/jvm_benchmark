@@ -23,8 +23,8 @@ import math
 
 
 parser = OptionParser()
-parser.add_option("-f", "--folder", default="/home/quentin/Downloads/jvm_result/test/test-heap/sar")
-parser.add_option("-s", "--sarFolder", default="/home/quentin/Downloads/jvm_result/test/test-heap/sar")
+parser.add_option("-f", "--folder", default="/home/quentin/Downloads/jvm_result/test/test-200-32/sar/2018-04-14-22-21-22")
+parser.add_option("-s", "--sarFolder", default="/home/quentin/Downloads/jvm_result/test/test-200-32/sar/2018-04-14-22-21-22")
 parser.add_option("-o", "--output", default="/home/quentin/Downloads/jvm_bench/results/result.csv")
 
 (options, args) = parser.parse_args()
@@ -58,9 +58,10 @@ rows = [header]
 onlyfiles = [f for f in os.listdir(options.folder) if not os.path.isfile(os.path.join(options.folder, f))]
 for f in onlyfiles:
     #test-heap-size-24GB-400ms-1522505517170
-    m = re.search("test-heap-size-(\d+)GB-(\d+)ms.*", f)
-    heap = m.groups()[0]
-    targetPause = m.groups()[1]
+    m = re.search("test-heap-size-(\d+)ms-(\d+)GB.*", f)
+    print (f)
+    heap = m.groups()[1]
+    targetPause = m.groups()[0]
     #print(f)
     psum, pmean, pmax, p95, p98, p99, p999, p9999 = ('',) * 8
 
@@ -68,7 +69,7 @@ for f in onlyfiles:
     #########GC STATS########
     pauses = []
     try:
-        for line in [line.rstrip('\n') for line in open(os.path.join(options.sarFolder, "test-heap-size-" + heap +"GB-" + targetPause + "ms-sar", 'gc.log.0.current'))]:
+        for line in [line.rstrip('\n') for line in open(os.path.join(options.sarFolder, "test-heap-size-" + targetPause + "ms-" + heap +"GB-sar", 'gc.log.0.current'))]:
             m = re.search(".*Total time for which application threads were stopped: (\d+),(\d+) seconds.*", line)
             if m:
                 pause = float(m.groups()[0]+"."+m.groups()[1])
