@@ -373,7 +373,7 @@ def test_base_zing():
     test1.test()
 
 def test_zing_heap():
-    i=40
+    i=48
     test1 = Test("test-zing-heap-size-"+str(i)+"GB", str(i)+"G", str(i)+"G")
     test1.useZing()
     test1.test()
