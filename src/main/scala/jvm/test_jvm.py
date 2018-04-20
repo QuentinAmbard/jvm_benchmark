@@ -265,6 +265,17 @@ def test_heap_pause_200():
         test1.test()
         time.sleep(2)
 
+def test_32_31_simple():
+    maxPause = 300
+    test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-16", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.useCompressedOops()
+    test1.test()
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-rs-16", "32G", "312G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.useCompressedOops()
+    test1.test()
+
 #32GB vs 31GB
 def test_32_31():
     maxPause = 300
@@ -411,7 +422,7 @@ def test_final():
 # test_mixed_percent()
 # test_string_dedup()
 #test_string_dedup()
-test_zing_heap()
+#test_zing_heap()
 #test_zero_based_compression()
 #test_heap_pause_200()
 
@@ -420,7 +431,7 @@ test_zing_heap()
 # #test_parallelRefProcEnabled()
 # test_new_size()
 # test_parallel_gc_thread()
-# test_32_31()
+test_32_31_simple()
 # test_max_tenuring()
 # test_ihop(0)
 #test_ihop(1)
