@@ -267,13 +267,12 @@ def test_heap_pause_200():
 
 def test_32_31_simple():
     maxPause = 300
-    test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-16", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    # test1 = Test("test-32-31GB-"+str(maxPause)+"ms-rs-16", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    # test1.setRegionSize("16m")
+    # test1.useCompressedOops()
+    # test1.test()
+    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-rs-16", "32G", "32G", G1MaxGCPauseMilli=maxPause)
     test1.setRegionSize("16m")
-    test1.useCompressedOops()
-    test1.test()
-    test1 = Test("test-32-32GB-"+str(maxPause)+"ms-rs-16", "32G", "312G", G1MaxGCPauseMilli=maxPause)
-    test1.setRegionSize("16m")
-    test1.useCompressedOops()
     test1.test()
 
 #32GB vs 31GB
