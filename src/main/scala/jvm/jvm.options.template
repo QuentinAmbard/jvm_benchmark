@@ -58,7 +58,7 @@
 
 # Decrease frequency of guaranteed safepoints to avoid needless pauses
 -XX:+UnlockDiagnosticVMOptions
--XX:GuaranteedSafepointInterval=300000
+#-XX:GuaranteedSafepointInterval=300000
 
 # Disable biased locking to avoid biased lock revokation pauses
 -XX:-UseBiasedLocking
