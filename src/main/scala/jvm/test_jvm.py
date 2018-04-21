@@ -419,7 +419,7 @@ def test_final():
     test1.test()
 
 
-test_base()
+test_base_zing()
 # test_mixed_percent()
 # test_string_dedup()
 #test_string_dedup()
