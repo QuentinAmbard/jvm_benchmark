@@ -31,7 +31,7 @@
 
 #-XX:LargePageSizeInBytes=2m
 #${LargePageSizeInBytes}
--XX:+UseLargePages
+#-XX:+UseLargePages
 #${UseLargePages}
 
 # Disable biased locking as it does not benefit Cassandra.

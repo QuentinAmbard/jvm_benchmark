@@ -430,9 +430,28 @@ def test_huge_page():
     test1.setRegionSize("16m")
     test1.test()
 
+def test_g1_updating_percent():
+    maxPause = 300
+    test1 = Test("test-updating-percent-0-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test.setG1UpdatingPausePersent(0)
+    test1.test()
+    test1 = Test("test-updating-percent-5-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test.setG1UpdatingPausePersent(5)
+    test1.test()
+    test1 = Test("test-updating-percent-10-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test.setG1UpdatingPausePersent(10)
+    test1.test()
+    test1 = Test("test-updating-percent-15-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test.setG1UpdatingPausePersent(15)
+    test1.test()
 
-test_huge_page()
+test_g1_updating_percent()
 
+#test_huge_page()
 #test_base()
 # test_mixed_percent()
 # test_string_dedup()
