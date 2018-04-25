@@ -126,9 +126,12 @@ class Test:
     def enableStringDedup(self):
         self.params["UseStringDeduplication"] = "-XX:+UseStringDeduplication"
 
+    def useLargPage(self):
+        self.params["LargePageSizeInBytes"] = "-XX:LargePageSizeInBytes=2m"
+        self.params["UseLargePages"] = "-XX:+UseLargePages"
 
 
-    def loadConfigurationFile(self):
+def loadConfigurationFile(self):
         with open('./jvm.options.template') as infile, open('./jvm.options', 'w') as outfile:
             for line in infile:
                 for key, value in self.params.items():
@@ -418,6 +421,18 @@ def test_final():
     #test1.useZing()
     test1.test()
 
+def test_huge_page():
+    maxPause = 300
+    test1 = Test("test-huge-page-disabled-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.test()
+    test1 = Test("test-huge-page-enabled-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
+    test1.useLargPage()
+    test1.test()
+
+
+test_huge_page()
 
 test_base()
 # test_mixed_percent()

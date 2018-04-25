@@ -29,6 +29,11 @@
 # transparent hugepage allocation more effective.
 -XX:+AlwaysPreTouch
 
+#-XX:LargePageSizeInBytes=2m
+#${LargePageSizeInBytes}
+-XX:+UseLargePages
+#${UseLargePages}
+
 # Disable biased locking as it does not benefit Cassandra.
 -XX:-UseBiasedLocking
 
