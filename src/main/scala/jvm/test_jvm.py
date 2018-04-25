@@ -130,8 +130,7 @@ class Test:
         self.params["LargePageSizeInBytes"] = "-XX:LargePageSizeInBytes=2m"
         self.params["UseLargePages"] = "-XX:+UseLargePages"
 
-
-def loadConfigurationFile(self):
+    def loadConfigurationFile(self):
         with open('./jvm.options.template') as infile, open('./jvm.options', 'w') as outfile:
             for line in infile:
                 for key, value in self.params.items():
