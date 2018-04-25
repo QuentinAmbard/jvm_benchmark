@@ -423,12 +423,12 @@ def test_final():
 
 def test_huge_page():
     maxPause = 300
-    test1 = Test("test-huge-page-disabled-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
-    test1.setRegionSize("16m")
-    test1.test()
     test1 = Test("test-huge-page-enabled-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
     test1.setRegionSize("16m")
     test1.useLargPage()
+    test1.test()
+    test1 = Test("test-huge-page-disabled-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
+    test1.setRegionSize("16m")
     test1.test()
 
 
