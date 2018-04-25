@@ -27,7 +27,7 @@ class TestJVM extends Simulation {
   val writePerSecPerQuery = getProperty("writePerSecPerQuery", "10000").toInt
   val readPerSecPerQuery = getProperty("readPerSecPerQuery", "10000").toInt
   val testDurationSec = getProperty("testDurationSec", "10").toInt
-  val rampupDurationSec = getProperty("rampupDurationSec", "120").toInt
+  val rampupDurationSec = getProperty("rampupDurationSec", "180").toInt
   val maxEntitiesPerTable = getProperty("maxEntitiesPerTable", "480000").toInt
 
   println(s"Starting test at $writePerSecPerQuery / $readPerSecPerQuery during $testDurationSec - rampup=$rampupDurationSec")
