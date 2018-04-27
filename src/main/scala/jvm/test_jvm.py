@@ -322,7 +322,7 @@ def test_heap_pause_time():
 
 def test_parallel_gc_thread():
     maxPause = 300
-    for thread in [8, 16, 32, 40]:
+    for thread in [40, 8, 16, 32]:
         test1 = Test("test-par-thread-"+str(thread)+"31GB-"+str(maxPause)+"ms", "31G", "31G", G1MaxGCPauseMilli=maxPause)
         test1.setParallelGCThreads(thread)
         test1.test()
@@ -449,8 +449,8 @@ def test_g1_updating_percent():
     test1.setG1UpdatingPausePersent(15)
     test1.test()
 
-test_g1_updating_percent()
-
+test_parallel_gc_thread()
+#test_g1_updating_percent()
 #test_huge_page()
 #test_base()
 # test_mixed_percent()
@@ -464,7 +464,7 @@ test_g1_updating_percent()
 # test_heap_pause_time()
 # #test_parallelRefProcEnabled()
 # test_new_size()
-# test_parallel_gc_thread()
+
 #test_32_31_simple()
 # test_max_tenuring()
 # test_ihop(0)
